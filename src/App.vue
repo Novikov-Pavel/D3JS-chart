@@ -1,30 +1,39 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <Chart
+    :width="width"
+    :height="height"
+    :margin-top="marginTop"
+    :margin-right="marginRight"
+    :margin-bottom="marginBottom"
+    :margin-left="marginLeft"
+    :data="data"
+  />
+  <LineWithTooltip />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script setup>
+import Chart from "./components/Chart.vue";
+import LineWithTooltip from "./components/LineWithTooltip.vue";
+
+const width = 800;
+const height = 500;
+const marginTop = 20;
+const marginRight = 30;
+const marginBottom = 30;
+const marginLeft = 40;
+const data = [
+  { date: "24-Apr-07", amount: 93.24 },
+  { date: "25-Apr-07", amount: 95.35 },
+  { date: "26-Apr-07", amount: 98.84 },
+  { date: "27-Apr-07", amount: 99.92 },
+  { date: "30-Apr-07", amount: 99.8 },
+  { date: "1-May-07", amount: 99.47 },
+  { date: "2-May-07", amount: 100.39 },
+  { date: "3-May-07", amount: 100.4 },
+  { date: "4-May-07", amount: 100.81 },
+  { date: "7-May-07", amount: 103.92 },
+  { date: "8-May-07", amount: 105.06 },
+  { date: "9-May-07", amount: 106.88 },
+  { date: "10-May-07", amount: 127.34 },
+];
+</script>
