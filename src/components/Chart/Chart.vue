@@ -1,5 +1,5 @@
 <template>
-  <div class="svg"></div>
+  <div class="chartLine"></div>
 </template>
 <script setup>
 import * as d3 from "d3";
@@ -17,7 +17,7 @@ const props = defineProps({
 
 onMounted(() => {
   const svg = d3
-    .select(".svg")
+    .select(".chartLine")
     .append("svg")
     .attr("width", props.width)
     .attr("height", props.height);
@@ -65,7 +65,3 @@ onMounted(() => {
     .attr("d", line);
 });
 </script>
-<style>
-.svg {
-  margin-bottom: 100px;
-}</style>

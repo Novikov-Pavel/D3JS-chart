@@ -1,8 +1,8 @@
 <template>
-  <div class="svg"></div>
+  <div class="LinewithTooltip"></div>
 </template>
 <script setup>
-import aapl from "../../public/aapl.json";
+import aapl from "../../../public/aapl.json";
 import * as d3 from "d3";
 import { onMounted } from "vue";
 
@@ -16,7 +16,6 @@ onMounted(() => {
   const marginLeft = 40;
 
   const isoDate = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
-
   // Declare the x (horizontal position) scale.
   const x = d3.scaleUtc(
     d3.extent(aapl, (d) => isoDate(d.date)),
@@ -37,7 +36,7 @@ onMounted(() => {
 
   // Create the SVG container.
   const svg = d3
-    .select(".svg")
+    .select(".LinewithTooltip")
     .append("svg")
     .attr("viewBox", [0, 0, width, height])
     .attr("width", width)
@@ -97,26 +96,26 @@ onMounted(() => {
   // Create the tooltip container.
   const tooltip = svg.append("g");
 
-  function formatValue(value) {
+  const formatValue = (value) => {
     return value.toLocaleString("en", {
       style: "currency",
       currency: "USD",
     });
-  }
+  };
 
-  function formatDate(date) {
-    return date.toLocaleString("en", {
-      month: "short",
-      day: "numeric",
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
-      timeZone: "UTC",
-    });
-  }
+      month: "long",
+      day: "numeric",
+    }).format(isoDate(date));
+  };
 
   // Add the event listeners that show or hide the tooltip.
-  const bisect = d3.bisector((d) => isoDate(d.date)).center;
+  const bisect = d3.bisector((d) => isoDate(d.date));
   function pointermoved(event) {
-    const i = bisect(aapl, x.invert(d3.pointer(event)[0]));
+    const i = bisect.center(aapl, x.invert(d3.pointer(event)[0]));
+    tooltip.style("display", null);
     const [X] = d3.pointer(event);
     tooltip.style("display", null);
     tooltip.attr("transform", `translate(${X},${y(aapl[i].close)})`);
@@ -152,11 +151,13 @@ onMounted(() => {
 
   // Wraps the text with a callout path of the correct size, as measured in the page.
   function size(text, path) {
-    const { x, y, width: w, height: h } = text.node().getBBox();
-    text.attr("transform", `translate(${-w / 2},${15 - y})`);
+    const { y, width, height } = text.node().getBBox();
+    text.attr("transform", `translate(${-width / 2},${15 - y})`);
     path.attr(
       "d",
-      `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`
+      `M${-width / 2 - 10},5H-5l5,-5l5,5H${width / 2 + 10}v${height + 20}h-${
+        width + 20
+      }z`
     );
   }
 });

@@ -1,26 +1,50 @@
 <template>
-  <Chart
-    :width="width"
-    :height="height"
-    :margin-top="marginTop"
-    :margin-right="marginRight"
-    :margin-bottom="marginBottom"
-    :margin-left="marginLeft"
-    :data="data"
-  />
-  <LineWithTooltip />
+  <div class="charts">
+    <Chart
+      :width="width"
+      :height="height"
+      :margin-top="marginTop"
+      :margin-right="marginRight"
+      :margin-bottom="marginBottom"
+      :margin-left="marginLeft"
+      :data="data"
+    />
+    <LineWithTooltip />
+    <BarChartVertic
+      :width="width"
+      :height="height"
+      :margin-top="marginTop"
+      :margin-right="marginRight"
+      :margin-bottom="marginBottom"
+      :margin-left="marginLeft"
+      :data="data"
+    />
+    <BarChartHoriz
+      :width="width"
+      :height="height"
+      :margin-top="marginTop"
+      :margin-right="marginRight"
+      :margin-bottom="marginBottom"
+      :margin-left="marginLeft"
+      :data="data"
+    />
+  </div>
 </template>
 
 <script setup>
-import Chart from "./components/Chart.vue";
-import LineWithTooltip from "./components/LineWithTooltip.vue";
+import {
+  Chart,
+  LineWithTooltip,
+  BarChartVertic,
+  BarChartHoriz,
+} from "./components";
 
 const width = 800;
 const height = 500;
 const marginTop = 20;
 const marginRight = 30;
 const marginBottom = 30;
-const marginLeft = 40;
+const marginLeft = 60;
 const data = [
   { date: "24-Apr-07", amount: 93.24 },
   { date: "25-Apr-07", amount: 95.35 },
@@ -37,3 +61,11 @@ const data = [
   { date: "10-May-07", amount: 127.34 },
 ];
 </script>
+
+<style lang="scss">
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+}
+</style>
