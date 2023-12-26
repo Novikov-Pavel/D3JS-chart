@@ -18,6 +18,7 @@
       :margin-bottom="marginBottom"
       :margin-left="marginLeft"
       :data="data"
+      :animation="true"
     />
     <BarChartHoriz
       :width="width"

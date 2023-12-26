@@ -14,6 +14,7 @@ const props = defineProps({
   marginRight: Number,
   marginBottom: Number,
   marginLeft: Number,
+  animation: Boolean,
 });
 
 onMounted(() => {
@@ -52,8 +53,8 @@ onMounted(() => {
     .data(props.data)
     .join("rect")
     .attr("x", (d) => x(d.date))
-    .attr("y", (d) => y(d.amount))
-    .attr("height", (d) => y(0) - y(d.amount))
+    .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
+    .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
     .attr("width", x.bandwidth());
 
   // Add the x-axis and label.
@@ -63,24 +64,29 @@ onMounted(() => {
     .call(d3.axisBottom(x));
 
   // Add the y-axis
-  svg
+  const yAxis = svg
     .append("g")
-    .attr("transform", `translate(${props.marginLeft},0)`)
+    .attr("transform", `translate(${props.marginLeft}, 0)`)
     .call(d3.axisLeft(y));
 
   // add label
-  svg
-    .append("g")
-    .attr("transform", `translate(${props.marginLeft},0)`)
-    .call(d3.axisLeft(y))
-    .call((g) =>
-      g
-        .append("text")
-        .attr("x", -props.marginLeft / 2)
-        .attr("y", 10)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "start")
-        .text("Price, $")
-    );
+  yAxis.call((g) =>
+    g
+      .append("text")
+      .attr("x", -props.marginLeft / 2)
+      .attr("y", props.marginTop / 2)
+      .attr("fill", "currentColor")
+      .attr("text-anchor", "start")
+      .text("Price, $")
+  );
+
+  if (props.animation) {
+    svg
+      .selectAll("rect")
+      .transition()
+      .duration(1500)
+      .attr("y", (d) => y(d.amount))
+      .attr("height", (d) => props.height - props.marginBottom - y(d.amount));
+  }
 });
 </script>
