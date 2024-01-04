@@ -21,7 +21,6 @@ onMounted(() => {
     .append("svg")
     .attr("width", props.width)
     .attr("height", props.height);
-  const g = svg.append("g");
 
   //2. Parse the dates
   const parseTime = d3.timeParse("%d-%b-%y");
@@ -44,24 +43,41 @@ onMounted(() => {
     .y((d) => y(d.amount));
 
   //5. Appending the Axes to the Chart
-  g.append("g")
+  svg
+    .append("g")
     .attr("transform", `translate(0, ${props.height - props.marginBottom})`)
     .call(d3.axisBottom(x));
 
-  g.append("g")
+  const axisY = svg
+    .append("g")
     .attr("transform", `translate(${props.marginLeft})`, 0)
-    .call(d3.axisLeft(y))
+    .call(d3.axisLeft(y));
+
+  axisY
     .append("text")
     .attr("fill", "#000")
     .attr("transform", `translate(0, ${props.marginTop / 2})`)
     .text("Price, $");
 
   //6. Appending a path to the Chart
-  g.append("path")
+  svg
+    .append("path")
+    .attr("width", props.width)
+    .attr("height", props.height)
     .datum(props.data)
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2)
     .attr("d", line);
+
+  svg
+    .selectAll()
+    .data(props.data)
+    .enter()
+    .append("circle")
+    .attr("style", "fill: skyblue")
+    .attr("r", 3.5)
+    .attr("cx", (d) => x(parseTime(d.date)))
+    .attr("cy", (d) => y(d.amount));
 });
 </script>
