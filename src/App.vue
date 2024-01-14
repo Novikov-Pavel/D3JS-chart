@@ -8,6 +8,12 @@
       :margin-bottom="marginBottom"
       :margin-left="marginLeft"
       :data="data"
+      :legend="true"
+      labelY=""
+      position-legend="bottom"
+      :limit-value-min="10"
+      :limit-value-max="100"
+      :aria-chart="true"
     />
     <LineWithTooltip />
     <BarChartVertic
