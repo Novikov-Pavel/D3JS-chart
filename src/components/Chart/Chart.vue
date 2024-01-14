@@ -47,16 +47,16 @@ onMounted(() => {
     .range([props.height - props.marginBottom - legend, props.marginTop]);
 
   //4. Creating a Line
-  const line = props.ariaChart
-    ? d3
-        .area()
-        .x((d) => x(parseTime(d.date)))
-        .y0(y(0))
-        .y1((d) => y(d.amount))
-    : d3
-        .line()
-        .x((d) => x(parseTime(d.date)))
-        .y((d) => y(d.amount));
+  const line = d3
+    .line()
+    .x((d) => x(parseTime(d.date)))
+    .y((d) => y(d.amount));
+
+  const ariaChart = d3
+    .area()
+    .x((d) => x(parseTime(d.date)))
+    .y0(y(0))
+    .y1((d) => y(d.amount));
 
   const divChart = svg
     .append("g")
@@ -89,14 +89,22 @@ onMounted(() => {
   divChart
     .append("path")
     .style("cursor", "pointer")
+    .attr("class", "pathLine")
     .attr("fill", props.ariaChart ? "gray" : "none")
     .attr("stroke", "skyblue")
+    .attr("d", line(props.data));
+
+  const path = document.querySelector(".pathLine");
+  const lengthPathLine = path.getTotalLength();
+
+  divChart
+    .select(".pathLine")
+    .attr("d", props.ariaChart ? ariaChart(props.data) : line(props.data))
+    .attr("fill-opacity", 0.2)
     .attr(
       "stroke-dasharray",
-      `${props.width - props.marginLeft}, ${2 * (props.width + props.height)}`
-    )
-    .attr("d", line(props.data))
-    .attr("fill-opacity", 0.2);
+      `${lengthPathLine}, ${2 * (props.width + props.height)}`
+    );
 
   divChart
     .selectAll()
@@ -107,6 +115,16 @@ onMounted(() => {
     .attr("r", 3)
     .attr("cx", (d) => x(parseTime(d.date)))
     .attr("cy", (d) => y(d.amount));
+
+  divChart
+    .selectAll()
+    .data(props.data)
+    .enter()
+    .append("text")
+    .attr("transform", `translate(${-15}, ${-10})`)
+    .attr("x", (d) => x(parseTime(d.date)))
+    .attr("y", (d) => y(d.amount))
+    .text((d) => d.amount)
 
   function positionLegend(value) {
     const values = {
