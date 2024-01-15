@@ -14,6 +14,7 @@
       :limit-value-min="10"
       :limit-value-max="100"
       :aria-chart="true"
+      value-position="top"
     />
     <LineWithTooltip />
     <BarChartVertic

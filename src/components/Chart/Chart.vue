@@ -19,6 +19,7 @@ const props = defineProps({
   limitValueMin: Number,
   limitValueMax: Number,
   ariaChart: Boolean,
+  valuePosition: String,
 });
 
 onMounted(() => {
@@ -121,10 +122,41 @@ onMounted(() => {
     .data(props.data)
     .enter()
     .append("text")
-    .attr("transform", `translate(${-15}, ${-10})`)
     .attr("x", (d) => x(parseTime(d.date)))
     .attr("y", (d) => y(d.amount))
-    .text((d) => d.amount)
+    .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
+    .attr("dominant-baseline", dominantBaseline(props.valuePosition) || "middle")
+    .attr(
+      "transform",
+      `translate(${valuePositionTranslate(props.valuePosition)})`
+    )
+    .text((d) => d.amount);
+
+  function dominantBaseline(position) {
+    const positions = {
+      top: "text-top",
+      bottom: "hanging",
+    };
+    return positions[position];
+  }
+
+  function textAnchor(position) {
+    const positions = {
+      left: "end",
+      right: "start",
+    };
+    return positions[position];
+  }
+
+  function valuePositionTranslate(translate) {
+    const translates = {
+      top: "0, -15",
+      bottom: "0, 15",
+      left: "-15, 0",
+      right: "15, 0",
+    };
+    return translates[translate];
+  }
 
   function positionLegend(value) {
     const values = {
