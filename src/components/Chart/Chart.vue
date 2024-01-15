@@ -20,6 +20,18 @@ const props = defineProps({
   limitValueMax: Number,
   ariaChart: Boolean,
   valuePosition: String,
+  valueCategory: String,
+  rotateXText: Number,
+  rotateYText: Number,
+  fontWeightX: Boolean,
+  fontWeightY: Boolean,
+  fontWeightValues: Boolean,
+  fontItalicValues: Boolean,
+  fontItalicX: Boolean,
+  fontSizeX: Number,
+  fontItalicY: Boolean,
+  fontSizeY: Number,
+  fontSizeValue: Number,
 });
 
 onMounted(() => {
@@ -67,7 +79,7 @@ onMounted(() => {
     );
 
   //5. Appending the Axes to the Chart
-  divChart
+  const axisX = divChart
     .append("g")
     .attr(
       "transform",
@@ -83,8 +95,11 @@ onMounted(() => {
   axisY
     .append("text")
     .attr("fill", "#000")
-    .attr("transform", `translate(0, ${props.marginTop / 2})`)
-    .text(props.labelY || amount);
+    .attr(
+      "transform",
+      `translate(0, ${props.marginTop / 2}),rotate(${props.rotateYText})`
+    )
+    .text(props.labelY || "");
 
   //6. Appending a path to the Chart
   divChart
@@ -107,7 +122,10 @@ onMounted(() => {
       `${lengthPathLine}, ${2 * (props.width + props.height)}`
     );
 
-  divChart
+  const dots = divChart.append("g");
+  const values = divChart.append("g");
+
+  dots
     .selectAll()
     .data(props.data)
     .enter()
@@ -117,7 +135,7 @@ onMounted(() => {
     .attr("cx", (d) => x(parseTime(d.date)))
     .attr("cy", (d) => y(d.amount));
 
-  divChart
+  values
     .selectAll()
     .data(props.data)
     .enter()
@@ -125,12 +143,31 @@ onMounted(() => {
     .attr("x", (d) => x(parseTime(d.date)))
     .attr("y", (d) => y(d.amount))
     .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
-    .attr("dominant-baseline", dominantBaseline(props.valuePosition) || "middle")
+    .attr(
+      "dominant-baseline",
+      dominantBaseline(props.valuePosition) || "middle"
+    )
     .attr(
       "transform",
-      `translate(${valuePositionTranslate(props.valuePosition)})`
+      `translate(${valuePositionTranslate(props.valuePosition)}), rotate(${0})`
     )
-    .text((d) => d.amount);
+    .attr("font-weight", props.fontWeightValues ? "bold" : "normal")
+    .attr("font-style", props.fontItalicValues ? "italic" : "normal")
+    .attr("font-size", props.fontSizeValue)
+    .text((d) => (props.valueCategory === "category" ? d.date : d.amount));
+
+  axisX
+    .selectAll("text")
+    .attr("transform", `rotate(${props.rotateXText})`)
+    .attr("font-weight", props.fontWeightX ? "bold" : "normal")
+    .attr("font-style", props.fontItalicX ? "italic" : "normal")
+    .attr("font-size", props.fontSizeX);
+
+  axisY
+    .selectAll("text")
+    .attr("font-weight", props.fontWeightY ? "bold" : "normal")
+    .attr("font-style", props.fontItalicY ? "italic" : "normal")
+    .attr("font-size", props.fontSizeY);
 
   function dominantBaseline(position) {
     const positions = {
@@ -184,7 +221,7 @@ onMounted(() => {
       .attr("y", positionLegend(props.positionLegend || "bottom"))
       .attr("dy", ".5rem")
       .style("text-anchor", "start")
-      .text(props.labelY || amount);
+      .text(props.labelY || "");
   }
 
   const tooltip = svg.append("g");
