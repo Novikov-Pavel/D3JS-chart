@@ -62,7 +62,7 @@ import {
 
 const width = 800;
 const height = 500;
-const marginTop = 20;
+const marginTop = 50;
 const marginRight = 30;
 const marginBottom = 30;
 const marginLeft = 60;

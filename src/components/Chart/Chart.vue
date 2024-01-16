@@ -3,7 +3,7 @@
 </template>
 <script setup>
 import * as d3 from "d3";
-import { computed, onMounted } from "vue";
+import { onMounted } from "vue";
 
 const props = defineProps({
   data: Array,
@@ -33,7 +33,6 @@ const props = defineProps({
   fontSizeY: Number,
   fontSizeValue: Number,
 });
-const data = computed(() => props.data);
 
 onMounted(() => {
   const legend = 70;
@@ -51,12 +50,12 @@ onMounted(() => {
   //3. Creating the Chart Axes
   const x = d3
     .scaleTime()
-    .domain(d3.extent(data.value, (d) => parseTime(d.date)))
+    .domain(d3.extent(props.data, (d) => parseTime(d.date)))
     .range([props.marginLeft, props.width - props.marginRight]);
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data.value, (d) => d.amount)])
+    .domain([0, d3.max(props.data, (d) => d.amount)])
     .range([props.height - props.marginBottom - legend, props.marginTop]);
 
   // 4. Creating a Line
@@ -100,58 +99,6 @@ onMounted(() => {
       `translate(0, ${props.marginTop / 2}),rotate(${props.rotateYText})`
     )
     .text(props.labelY || "");
-
-  //6. Appending a path to the Chart
-  // divChart
-  //   .append("path")
-  //   .style("cursor", "pointer")
-  //   .attr("class", "pathLine")
-  //   .attr("fill", props.ariaChart ? "gray" : "none")
-  //   .attr("stroke", d3.scaleOrdinal(d3.schemeAccent));
-  // .attr("d", line(data.value));
-
-  // divChart
-  //   .select(".pathLine")
-  //   // .attr("d", props.ariaChart ? ariaChart(data.value) : line(data.value))
-  //   .attr("fill-opacity", 0.2)
-  //   .attr(
-  //     "stroke-dasharray",
-  //     `${lengthPathLine}, ${2 * (props.width + props.height)}`
-  //   );
-
-  const dots = divChart.append("g");
-  const values = divChart.append("g");
-
-  dots
-    .selectAll("circle")
-    .data(data.value)
-    .enter()
-    .append("circle")
-    .attr("style", "fill: white; stroke: skyblue; cursor: pointer")
-    .attr("r", 3)
-    .attr("cx", (d) => x(parseTime(d.date)))
-    .attr("cy", (d) => y(d.amount));
-
-  values
-    .selectAll("text")
-    .data(data.value)
-    .enter()
-    .append("text")
-    .attr("x", (d) => x(parseTime(d.date)))
-    .attr("y", (d) => y(d.amount))
-    .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
-    .attr(
-      "dominant-baseline",
-      dominantBaseline(props.valuePosition) || "middle"
-    )
-    .attr(
-      "transform",
-      `translate(${valuePositionTranslate(props.valuePosition)}), rotate(${0})`
-    )
-    .attr("font-weight", props.fontWeightValues ? "bold" : "normal")
-    .attr("font-style", props.fontItalicValues ? "italic" : "normal")
-    .attr("font-size", props.fontSizeValue)
-    .text((d) => (props.valueCategory === "category" ? d.date : d.amount));
 
   axisX
     .selectAll("text")
@@ -228,14 +175,14 @@ onMounted(() => {
     const bisect = d3.bisector((d) => parseTime(d.date)).center;
     const [xCoord] = d3.pointer(event);
     const scaleXCoord = x.invert(xCoord);
-    const dataIndex = bisect(data.value, scaleXCoord);
+    const dataIndex = bisect(props.data, scaleXCoord);
 
     tooltip
       .attr(
         "transform",
         `translate(
-          ${x(parseTime(data.value[dataIndex]?.date)) - 20},
-          ${y(data.value[dataIndex].amount) - 50})`
+          ${x(parseTime(props.data[dataIndex]?.date)) - 20},
+          ${y(props.data[dataIndex].amount) - 50})`
       )
       .style("cursor", "pointer")
       .selectAll("text")
@@ -244,7 +191,7 @@ onMounted(() => {
       .call((text) =>
         text
           .selectAll("tspan")
-          .data([data.value[dataIndex].date, data.value[dataIndex].amount])
+          .data([props.data[dataIndex].date, props.data[dataIndex].amount])
           .join("tspan")
           .attr("x", 0)
           .attr("y", (_, dataIndex) => `${dataIndex * 1}em`)
@@ -264,16 +211,10 @@ onMounted(() => {
     .append("svg:clipPath")
     .attr("id", "clip")
     .append("svg:rect")
-    .attr(
-      "width",
-      props.width - props.marginLeft - props.marginRight - strokeWidth * 2
-    )
-    .attr(
-      "height",
-      props.height - props.marginTop - props.marginBottom - legend
-    )
-    .attr("x", props.marginLeft + strokeWidth)
-    .attr("y", props.marginTop - strokeWidth);
+    .attr("width", props.width - props.marginLeft - props.marginRight)
+    .attr("height", props.height - props.marginBottom - legend)
+    .attr("x", props.marginLeft)
+    .attr("y", 0);
 
   const brush = d3
     .brushX()
@@ -289,22 +230,54 @@ onMounted(() => {
   const Line = svg.append("g").attr("clip-path", "url(#clip)");
 
   Line.append("path")
-    .datum(data.value)
+    .datum(props.data)
     .attr("class", "line")
-    .attr("fill", props.ariaChart ? "gray" : "none")
-    .attr("stroke", d3.scaleOrdinal(d3.schemeAccent))
+    .attr("fill", "none")
     .attr("stroke-width", strokeWidth)
+    .attr("stroke", d3.scaleOrdinal(d3.schemeAccent))
     .attr("d", line);
 
-  const path = document.querySelector(".line");
-  const lengthPathLine = path.getTotalLength();
-
-  Line.select(".line")
+  Line.append("path")
+    .datum(props.data)
+    .attr("class", "aria")
+    .attr("fill", "gray")
     .attr("fill-opacity", 0.2)
-    .attr(props.ariaChart && "d", ariaChart);
+    .attr("d", ariaChart);
 
-  const lengthAriaLine = path.getTotalLength();
-  console.log(lengthAriaLine - lengthPathLine);
+  const dots = Line.append("g");
+  const values = Line.append("g");
+
+  dots
+    .selectAll("circle")
+    .data(props.data)
+    .enter()
+    .append("circle")
+    .attr("style", "fill: white; stroke: skyblue; cursor: pointer")
+    .attr("r", 3)
+    .attr("cx", (d) => x(parseTime(d.date)))
+    .attr("cy", (d) => y(d.amount));
+
+  values
+    .selectAll("text")
+    .data(props.data)
+    .enter()
+    .append("text")
+
+    .attr("x", (d) => x(parseTime(d.date)))
+    .attr("y", (d) => y(d.amount))
+    .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
+    .attr(
+      "dominant-baseline",
+      dominantBaseline(props.valuePosition) || "middle"
+    )
+    .attr(
+      "transform",
+      `translate(${valuePositionTranslate(props.valuePosition)}), rotate(${0})`
+    )
+    .attr("font-weight", props.fontWeightValues ? "bold" : "normal")
+    .attr("font-style", props.fontItalicValues ? "italic" : "normal")
+    .attr("font-size", props.fontSizeValue)
+    .text((d) => (props.valueCategory === "category" ? d.date : d.amount));
 
   Line.append("g").attr("class", "brush").call(brush);
 
@@ -322,10 +295,9 @@ onMounted(() => {
     }
 
     axisX.transition().duration(1000).call(d3.axisBottom(x));
-    Line.select(".line")
-      .transition()
-      .duration(1000)
-      .attr("d", props.ariaChart ? ariaChart : line);
+
+    Line.select(".line").transition().duration(1000).attr("d", line);
+    Line.select(".aria").transition().duration(1000).attr("d", ariaChart);
 
     dots
       .transition()
@@ -343,11 +315,10 @@ onMounted(() => {
   }
 
   svg.on("dblclick", () => {
-    x.domain(d3.extent(data.value, (d) => parseTime(d.date)));
-    axisX.transition().call(d3.axisBottom(x));
-    Line.select(".line")
-      .transition()
-      .attr("d", props.ariaChart ? ariaChart : line);
+    x.domain(d3.extent(props.data, (d) => parseTime(d.date)));
+    axisX.transition().call(d3.axisBottom(x).ticks(20));
+    Line.select(".line").transition().attr("d", line);
+    Line.select(".aria").transition().attr("d", ariaChart);
 
     dots
       .transition()
