@@ -36,7 +36,6 @@ const props = defineProps({
 
 onMounted(() => {
   const legend = 70;
-  const amount = Object.keys(props.data[0])[1];
   const svg = d3
     .select(".chartLine")
     .append("svg")
@@ -59,11 +58,11 @@ onMounted(() => {
     .domain([0, d3.max(props.data, (d) => d.amount)])
     .range([props.height - props.marginBottom - legend, props.marginTop]);
 
-  //4. Creating a Line
-  const line = d3
-    .line()
-    .x((d) => x(parseTime(d.date)))
-    .y((d) => y(d.amount));
+  // 4. Creating a Line
+  // const line = d3
+  //   .line()
+  //   .x((d) => x(parseTime(d.date)))
+  //   .y((d) => y(d.amount));
 
   const ariaChart = d3
     .area()
@@ -107,15 +106,15 @@ onMounted(() => {
     .style("cursor", "pointer")
     .attr("class", "pathLine")
     .attr("fill", props.ariaChart ? "gray" : "none")
-    .attr("stroke", "skyblue")
-    .attr("d", line(props.data));
+    .attr("stroke", d3.scaleOrdinal(d3.schemeAccent));
+  // .attr("d", line(props.data));
 
   const path = document.querySelector(".pathLine");
   const lengthPathLine = path.getTotalLength();
-
+  
   divChart
     .select(".pathLine")
-    .attr("d", props.ariaChart ? ariaChart(props.data) : line(props.data))
+    // .attr("d", props.ariaChart ? ariaChart(props.data) : line(props.data))
     .attr("fill-opacity", 0.2)
     .attr(
       "stroke-dasharray",
@@ -259,6 +258,88 @@ onMounted(() => {
   function pointerleft() {
     tooltip.style("display", "none");
   }
+
+  svg
+    .append("defs")
+    .append("svg:clipPath")
+    .attr("id", "clip")
+    .append("svg:rect")
+    .attr("width", props.width - props.marginLeft - props.marginRight)
+    .attr("height", props.height - props.marginTop - props.marginBottom - legend)
+    .attr("x", props.marginLeft)
+    .attr("y", props.marginTop);
+
+  const brush = d3
+    .brushX()
+    .extent([
+      [props.marginLeft, props.marginTop],
+      [
+        props.width - props.marginTop,
+        props.height - props.marginBottom - legend,
+      ],
+    ])
+    .on("end", updateChart);
+
+  const Line = svg.append("g").attr("clip-path", "url(#clip)");
+
+  Line.append("path")
+    .datum(props.data)
+    .attr("class", "line")
+    .attr("fill", "none")
+    .attr("stroke", d3.scaleOrdinal(d3.schemeAccent))
+    .attr("stroke-width", 1.5)
+    .attr(
+      "d",
+      d3
+        .line()
+        .x((d) => x(parseTime(d.date)))
+        .y((d) => y(d.amount))
+    );
+
+  Line.append("g").attr("class", "brush").call(brush);
+
+  let idleTimeout;
+  const idled = () => (idleTimeout = null);
+
+  function updateChart(event, d) {
+    const extent = event.selection;
+    // console.log("event", event);
+    // console.log("x.invert(extent[0])", x.invert(extent[0]));
+    // console.log("x.invert(extent[1])", x.invert(extent[1]));
+
+    if (!extent) {
+      if (!idleTimeout) return (idleTimeout = setTimeout(idled, 350));
+    } else {
+      x.domain([x.invert(extent[0]), x.invert(extent[1])]);
+      Line.select(".brush").call(brush.move, null);
+    }
+
+    axisX.transition().duration(1000).call(d3.axisBottom(x));
+    Line.select(".line")
+      .transition()
+      .duration(1000)
+      .attr(
+        "d",
+        d3
+          .line()
+          .x((d) => x(parseTime(d.date)))
+          .y((d) => y(d.amount))
+      );
+  }
+
+  svg.on("dblclick", () => {
+    x.domain(d3.extent(props.data, (d) => parseTime(d.date)));
+    axisX.transition().call(d3.axisBottom(x));
+    Line.select(".line")
+      .transition()
+      .attr(
+        "d",
+        d3
+          .line()
+          .x((d) => x(parseTime(d.date)))
+          .y((d) => y(d.amount))
+      );
+  });
 
   const limitValue = svg.append("g");
   if (props.limitValueMin) {
