@@ -13,7 +13,7 @@
       position-legend="bottom"
       :limit-value-min="10"
       :limit-value-max="20"
-      :aria-chart="false"
+      :aria-chart="true"
       value-position="top"
       value-category="value"
       :rotate-x-text="0"
