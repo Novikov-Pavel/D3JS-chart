@@ -72,15 +72,21 @@ onMounted(() => {
     .attr("font-style", props.fontItalicX ? "italic" : "normal")
     .attr("font-size", props.fontSizeX);
 
-  const y = d3
+  const y1 = d3
     .scaleLinear()
-    .domain([0, d3.max(props.data, (d) => d.amount)])
     .range([props.height - props.marginBottom - legendMargin, props.marginTop]);
+  y1.domain([0, d3.max(props.data, (d) => d.amount)]);
 
-  const axisY = divChart
+  const y2 = d3
+    .scaleLinear()
+    .range([props.height - props.marginBottom - legendMargin, props.marginTop]);
+  y2.domain([0, 4]);
+
+  const axisY1 = divChart
     .append("g")
     .attr("transform", `translate(${props.marginLeft})`, 0)
-    .call(d3.axisLeft(y).ticks(20))
+    .style("color", d3.scaleOrdinal(d3.schemeSet1))
+    .call(d3.axisLeft(y1).ticks())
     .append("text")
     .attr("fill", "#000")
     .attr(
@@ -89,24 +95,41 @@ onMounted(() => {
     )
     .text(props.labelY || "");
 
-  axisY
+  const axisY2 = divChart
+    .append("g")
+    .attr("transform", `translate(${props.width - props.marginRight})`, 0)
+    .style("color", d3.scaleOrdinal(d3.schemeSet2))
+    .call(d3.axisRight(y2).ticks());
+
+  axisY1
     .selectAll("text")
     .attr("font-weight", props.fontWeightY ? "bold" : "normal")
     .attr("font-style", props.fontItalicY ? "italic" : "normal")
     .attr("font-size", props.fontSizeY);
 
   // 4. Создание графика
-  const line = d3
+  const line1 = d3
     .line()
     .x((d) => x(parseTime(d.date)))
-    .y((d) => y(d.amount));
+    .y((d) => y1(d.amount));
+
+  const line2 = d3
+    .line()
+    .x((d) => x(parseTime(d.date)))
+    .y((d) => y2(d.y2));
 
   // 5. Создаине заливки
-  const ariaChart = d3
+  const ariaChart1 = d3
     .area()
     .x((d) => x(parseTime(d.date)))
-    .y0(y(0))
-    .y1((d) => y(d.amount));
+    .y0(y1(0))
+    .y1((d) => y1(d.amount));
+
+  const ariaChart2 = d3
+    .area()
+    .x((d) => x(parseTime(d.date)))
+    .y0(y2(0))
+    .y1((d) => y2(d.y2));
 
   //6. Функция выравнивания значения на графике по вертикали
 
@@ -156,7 +179,7 @@ onMounted(() => {
       .attr("y", positionLegend(props.positionLegend || "bottom"))
       .attr("width", 22)
       .attr("height", 12)
-      .style("fill", d3.scaleOrdinal(d3.schemeAccent))
+      .style("fill", d3.scaleOrdinal(d3.schemeSet1))
       .attr("rx", 3);
 
     legendDiv
@@ -201,39 +224,83 @@ onMounted(() => {
   // 13. Отрисовка графика и заливки
   Line.append("path")
     .datum(props.data)
-    .attr("class", "line")
+    .attr("class", "line1")
     .attr("fill", "none")
-    .attr("stroke-width", 1.5)
-    .attr("stroke", d3.scaleOrdinal(d3.schemeAccent))
-    .attr("d", line);
+    .attr("stroke-width", 2)
+    .attr("stroke", d3.scaleOrdinal(d3.schemeSet1))
+    .attr("d", line1(props.data));
 
   Line.append("path")
     .datum(props.data)
-    .attr("class", "aria")
-    .attr("fill", "gray")
-    .attr("fill-opacity", 0.2)
-    .attr("d", ariaChart);
+    .attr("fill", "none")
+    .attr("class", "line2")
+    .attr("stroke-width", 2)
+    .attr("stroke", d3.scaleOrdinal(d3.schemeSet2))
+    .attr("d", line2(props.data));
 
-  const values = Line.append("g");
+  Line.append("path")
+    .datum(props.data)
+    .attr("class", "aria1")
+    .attr("fill", d3.scaleOrdinal(d3.schemeSet1))
+    .attr("fill-opacity", 0.2)
+    .attr("d", ariaChart1);
+
+  Line.append("path")
+    .datum(props.data)
+    .attr("class", "aria2")
+    .attr("fill", d3.scaleOrdinal(d3.schemeSet2))
+    .attr("fill-opacity", 0.2)
+    .attr("d", ariaChart2);
+
+  const values1 = Line.append("g").attr("class", "values1");
+  const values2 = Line.append("g").attr("class", "values2");
 
   // 14. Добавление точек на график
-  svg
-    .selectAll("circle")
+  const gCircle1 = svg
+    .selectAll(".gCircle1")
     .data(props.data)
     .enter()
+    .append("g")
+    .attr("class", "gCircle1");
+
+  const gCircle2 = svg
+    .selectAll(".gCircle2")
+    .data(props.data)
+    .enter()
+    .append("g")
+    .attr("class", "gCircle2");
+
+  gCircle1
     .append("circle")
     .attr("style", "fill: white; stroke: skyblue; cursor: pointer")
     .attr("r", 3)
     .attr("cx", (d) => x(parseTime(d.date)))
-    .attr("cy", (d) => y(d.amount))
-    .on("mouseover", mouseover)
+    .attr("cy", (d) => y1(d.amount))
+    .on("mouseover", mouseover1)
+    .on("mouseout", mouseout)
+    .on("contextmenu", () => console.log("правая кнопка нажата"));
+
+  gCircle2
+    .append("circle")
+    .attr("style", "fill: white; stroke: skyblue; cursor: pointer")
+    .attr("r", 3)
+    .attr("cx", (d) => x(parseTime(d.date)))
+    .attr("cy", (d) => y2(d.y2))
+    .on("mouseover", mouseover2)
     .on("mouseout", mouseout)
     .on("contextmenu", () => console.log("правая кнопка нажата"));
 
   // 15. Функция наведения тултипа
-  function mouseover(d) {
+  function mouseover1(d) {
     tooltip.append("p").html(d.target.__data__.date);
     tooltip.append("p").html(d.target.__data__.amount);
+    tooltip.append("p").html(d.target.__data__.test);
+    tooltip.style("display", "block");
+  }
+
+  function mouseover2(d) {
+    tooltip.append("p").html(d.target.__data__.date);
+    tooltip.append("p").html(d.target.__data__.y2);
     tooltip.append("p").html(d.target.__data__.test);
     tooltip.style("display", "block");
   }
@@ -243,13 +310,20 @@ onMounted(() => {
     tooltip.selectAll("p").remove();
   }
   // 17. Добавляем значения на график и их форматируем
-  values
+  // const gValues1 = values1
+  //   .selectAll("text")
+  //   .data(props.data)
+  //   .enter();
+
+  // const gValues2 = values2.selectAll("text").data(props.data).enter();
+
+  values1
     .selectAll("text")
     .data(props.data)
     .enter()
     .append("text")
     .attr("x", (d) => x(parseTime(d.date)))
-    .attr("y", (d) => y(d.amount))
+    .attr("y", (d) => y1(d.amount))
     .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
     .attr(
       "dominant-baseline",
@@ -263,6 +337,27 @@ onMounted(() => {
     .attr("font-style", props.fontItalicValues ? "italic" : "normal")
     .attr("font-size", props.fontSizeValue)
     .text((d) => (props.valueCategory === "category" ? d.date : d.amount));
+
+  values2
+    .selectAll("text")
+    .data(props.data)
+    .enter()
+    .append("text")
+    .attr("x", (d) => x(parseTime(d.date)))
+    .attr("y", (d) => y2(d.y2))
+    .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
+    .attr(
+      "dominant-baseline",
+      dominantBaseline(props.valuePosition) || "middle"
+    )
+    .attr(
+      "transform",
+      `translate(${valuePositionTranslate(props.valuePosition)}), rotate(${0})`
+    )
+    .attr("font-weight", props.fontWeightValues ? "bold" : "normal")
+    .attr("font-style", props.fontItalicValues ? "italic" : "normal")
+    .attr("font-size", props.fontSizeValue)
+    .text((d) => (props.valueCategory === "category" ? d.date : d.y2));
 
   Line.append("g").attr("class", "brush").call(brush);
 
@@ -283,71 +378,103 @@ onMounted(() => {
 
     axisX.transition().duration(1000).call(d3.axisBottom(x));
 
-    Line.select(".line").transition().duration(1000).attr("d", line);
-    Line.select(".aria").transition().duration(1000).attr("d", ariaChart);
+    Line.select(".line1").transition().duration(1000).attr("d", line1);
+    Line.select(".line2").transition().duration(1000).attr("d", line2);
+    Line.select(".aria1").transition().duration(1000).attr("d", ariaChart1);
+    Line.select(".aria2").transition().duration(1000).attr("d", ariaChart2);
 
-    svg
+    gCircle1
       .transition()
       .duration(1000)
       .selectAll("circle")
       .attr("cx", (d) => x(parseTime(d.date)))
-      .attr("cy", (d) => y(d.amount));
+      .attr("cy", (d) => y1(d.amount));
 
-    values
+    gCircle2
+      .transition()
+      .duration(1000)
+      .selectAll("circle")
+      .attr("cx", (d) => x(parseTime(d.date)))
+      .attr("cy", (d) => y2(d.y2));
+
+    values1
       .transition()
       .duration(1000)
       .selectAll("text")
       .attr("x", (d) => x(parseTime(d.date)))
-      .attr("y", (d) => y(d.amount));
+      .attr("y", (d) => y1(d.amount));
+
+    values2
+      .transition()
+      .duration(1000)
+      .selectAll("text")
+      .attr("x", (d) => x(parseTime(d.date)))
+      .attr("y", (d) => y2(d.y2));
   }
 
   // 20. Сброс зума
   svg.on("dblclick", () => {
     x.domain(d3.extent(props.data, (d) => parseTime(d.date)));
     axisX.transition().call(d3.axisBottom(x).ticks(20));
-    Line.select(".line").transition().attr("d", line);
-    Line.select(".aria").transition().attr("d", ariaChart);
+    Line.select(".line1").transition().attr("d", line1);
+    Line.select(".line2").transition().attr("d", line2);
+    Line.select(".aria1").transition().attr("d", ariaChart1);
+    Line.select(".aria2").transition().attr("d", ariaChart2);
 
-    svg
+    gCircle1
       .transition()
       .duration(1000)
       .selectAll("circle")
       .attr("cx", (d) => x(parseTime(d.date)))
-      .attr("cy", (d) => y(d.amount));
+      .attr("cy", (d) => y1(d.amount));
 
-    values
+    gCircle2
+      .transition()
+      .duration(1000)
+      .selectAll("circle")
+      .attr("cx", (d) => x(parseTime(d.date)))
+      .attr("cy", (d) => y2(d.y2));
+
+    values1
       .transition()
       .duration(1000)
       .selectAll("text")
       .attr("x", (d) => x(parseTime(d.date)))
-      .attr("y", (d) => y(d.amount));
+      .attr("y", (d) => y1(d.amount));
+
+    values2
+      .transition()
+      .duration(1000)
+      .selectAll("text")
+      .attr("x", (d) => x(parseTime(d.date)))
+      .attr("y", (d) => y2(d.y2));
   });
 
   // 21. Лимитные значения
-  const limitValue = svg.append("g");
-  if (props.limitValueMin) {
-    limitValue
-      .append("line")
-      .attr("x1", props.marginLeft)
-      .attr("y1", y(props.limitValueMin))
-      .attr("x2", props.width - props.marginRight)
-      .attr("y2", y(props.limitValueMin))
-      .style("stroke-dasharray", "5 1")
-      .style("stroke", "black")
-      .style("stroke-width", "1px");
-  }
+  // const limitValue = svg.append("g");
+  // if (props.limitValueMin) {
+  //   limitValue
+  //     .append("line")
+  //     .attr("x1", props.marginLeft)
+  //     .attr("y1", y(props.limitValueMin))
+  //     .attr("x2", props.width - props.marginRight)
+  //     .attr("y2", y(props.limitValueMin))
+  //     .style("stroke-dasharray", "5 1")
+  //     .style("stroke", "black")
+  //     .style("stroke-width", "1px");
+  // }
 
-  if (props.limitValueMax) {
-    limitValue
-      .append("line")
-      .attr("x1", props.marginLeft)
-      .attr("y1", y(props.limitValueMax))
-      .attr("x2", props.width - props.marginRight)
-      .attr("y2", y(props.limitValueMax))
-      .style("stroke-dasharray", "5 1")
-      .style("stroke", "black")
-      .style("stroke-width", "1px");
-  }
+  // if (props.limitValueMax) {
+  //   limitValue
+  //     .append("line")
+  //     .attr("x1", props.marginLeft)
+  //     .attr("y1", y(props.limitValueMax))
+  //     .attr("x2", props.width - props.marginRight)
+  //     .attr("y2", y(props.limitValueMax))
+  //     .style("stroke-dasharray", "5 1")
+  //     .style("stroke", "black")
+  //     .style("stroke-width", "1px");
+  // }
 });
 </script>
 <style>
