@@ -1,5 +1,7 @@
 <template>
-  <div class="chartLine"></div>
+  <div class="chartLine">
+    <svg :width="width" :height="height"></svg>
+  </div>
 </template>
 <script setup>
 import * as d3 from "d3";
@@ -36,11 +38,7 @@ const props = defineProps({
 
 onMounted(() => {
   const legendMargin = 70;
-  const svg = d3
-    .select(".chartLine")
-    .append("svg")
-    .attr("width", props.width)
-    .attr("height", props.height);
+  const svg = d3.select("svg");
 
   // 1. Позиционирование легенды
   const divChart = svg
@@ -230,7 +228,7 @@ onMounted(() => {
     .attr("cy", (d) => y(d.amount))
     .on("mouseover", mouseover)
     .on("mouseout", mouseout)
-    .on("contextmenu", () => console.log('правая кнопка нажата'))
+    .on("contextmenu", () => console.log("правая кнопка нажата"));
 
   // 15. Функция наведения тултипа
   function mouseover(d) {
