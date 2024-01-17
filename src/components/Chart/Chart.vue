@@ -35,70 +35,37 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  const legend = 70;
+  const legendMargin = 70;
   const svg = d3
     .select(".chartLine")
     .append("svg")
     .attr("width", props.width)
     .attr("height", props.height);
-  // .on("pointerenter pointermove", pointermoved)
-  // .on("pointerleave", pointerleft);
 
-  //2. Parse the dates
+  // 1. Позиционирование легенды
+  const divChart = svg
+    .append("g")
+    .attr(
+      "transform",
+      `translate(0, ${props.positionLegend === "top" ? legendMargin : 0})`
+    );
+
+  //2. Парсинг даты
   const parseTime = d3.timeParse("%d-%b-%y");
 
-  //3. Creating the Chart Axes
+  //3. Создание осей, форматирование их значений и их названия
   const x = d3
     .scaleTime()
     .domain(d3.extent(props.data, (d) => parseTime(d.date)))
     .range([props.marginLeft, props.width - props.marginRight]);
 
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(props.data, (d) => d.amount)])
-    .range([props.height - props.marginBottom - legend, props.marginTop]);
-
-  // 4. Creating a Line
-  const line = d3
-    .line()
-    .x((d) => x(parseTime(d.date)))
-    .y((d) => y(d.amount));
-
-  const ariaChart = d3
-    .area()
-    .x((d) => x(parseTime(d.date)))
-    .y0(y(0))
-    .y1((d) => y(d.amount));
-
-  const divChart = svg
-    .append("g")
-    .attr(
-      "transform",
-      `translate(0, ${props.positionLegend === "top" ? legend : 0})`
-    );
-
-  //5. Appending the Axes to the Chart
   const axisX = divChart
     .append("g")
     .attr(
       "transform",
-      `translate(0, ${props.height - props.marginBottom - legend})`
+      `translate(0, ${props.height - props.marginBottom - legendMargin})`
     )
     .call(d3.axisBottom(x).ticks(20));
-
-  const axisY = divChart
-    .append("g")
-    .attr("transform", `translate(${props.marginLeft})`, 0)
-    .call(d3.axisLeft(y).ticks(20));
-
-  axisY
-    .append("text")
-    .attr("fill", "#000")
-    .attr(
-      "transform",
-      `translate(0, ${props.marginTop / 2}),rotate(${props.rotateYText})`
-    )
-    .text(props.labelY || "");
 
   axisX
     .selectAll("text")
@@ -107,11 +74,43 @@ onMounted(() => {
     .attr("font-style", props.fontItalicX ? "italic" : "normal")
     .attr("font-size", props.fontSizeX);
 
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(props.data, (d) => d.amount)])
+    .range([props.height - props.marginBottom - legendMargin, props.marginTop]);
+
+  const axisY = divChart
+    .append("g")
+    .attr("transform", `translate(${props.marginLeft})`, 0)
+    .call(d3.axisLeft(y).ticks(20))
+    .append("text")
+    .attr("fill", "#000")
+    .attr(
+      "transform",
+      `translate(0, ${props.marginTop / 2}),rotate(${props.rotateYText})`
+    )
+    .text(props.labelY || "");
+
   axisY
     .selectAll("text")
     .attr("font-weight", props.fontWeightY ? "bold" : "normal")
     .attr("font-style", props.fontItalicY ? "italic" : "normal")
     .attr("font-size", props.fontSizeY);
+
+  // 4. Создание графика
+  const line = d3
+    .line()
+    .x((d) => x(parseTime(d.date)))
+    .y((d) => y(d.amount));
+
+  // 5. Создаине заливки
+  const ariaChart = d3
+    .area()
+    .x((d) => x(parseTime(d.date)))
+    .y0(y(0))
+    .y1((d) => y(d.amount));
+
+  //6. Функция выравнивания значения на графике по вертикали
 
   function dominantBaseline(position) {
     const positions = {
@@ -121,6 +120,7 @@ onMounted(() => {
     return positions[position];
   }
 
+  //7. Функция выравнивания значения на графике по горизонтали
   function textAnchor(position) {
     const positions = {
       left: "end",
@@ -129,6 +129,7 @@ onMounted(() => {
     return positions[position];
   }
 
+  //8. Функция позиционирования значения на графике
   function valuePositionTranslate(translate) {
     const translates = {
       top: "0, -15",
@@ -139,6 +140,7 @@ onMounted(() => {
     return translates[translate];
   }
 
+  //9. Функция позиционирования легенды
   function positionLegend(value) {
     const values = {
       top: props.marginTop,
@@ -167,73 +169,43 @@ onMounted(() => {
       .style("text-anchor", "start")
       .text(props.labelY || "");
   }
-
-  const tooltip = svg.append("g");
-
-  function pointermoved(event) {
-    tooltip.style("display", null);
-    const bisect = d3.bisector((d) => parseTime(d.date)).center;
-    const [xCoord] = d3.pointer(event);
-    const scaleXCoord = x.invert(xCoord);
-    const dataIndex = bisect(props.data, scaleXCoord);
-
-    tooltip
-      .attr(
-        "transform",
-        `translate(
-          ${x(parseTime(props.data[dataIndex]?.date)) - 20},
-          ${y(props.data[dataIndex].amount) - 50})`
-      )
-      .style("cursor", "pointer")
-      .selectAll("text")
-      .data([,])
-      .join("text")
-      .call((text) =>
-        text
-          .selectAll("tspan")
-          .data([props.data[dataIndex].date, props.data[dataIndex].amount])
-          .join("tspan")
-          .attr("x", 0)
-          .attr("y", (_, dataIndex) => `${dataIndex * 1}em`)
-          .attr("font-weight", (_, dataIndex) => (dataIndex ? null : "bold"))
-          .text((d) => d)
-      );
-  }
-
-  function pointerleft() {
-    tooltip.style("display", "none");
-  }
-
-  const strokeWidth = 1.5;
-
+  // 10. Добавление clipPath для выделения при зуме
   svg
     .append("defs")
     .append("svg:clipPath")
     .attr("id", "clip")
     .append("svg:rect")
     .attr("width", props.width - props.marginLeft - props.marginRight)
-    .attr("height", props.height - props.marginBottom - legend)
+    .attr("height", props.height - props.marginBottom - legendMargin)
     .attr("x", props.marginLeft)
     .attr("y", 0);
 
+  // 11. Блок для зума
   const brush = d3
     .brushX()
     .extent([
       [props.marginLeft, props.marginTop],
       [
         props.width - props.marginRight,
-        props.height - props.marginBottom - legend,
+        props.height - props.marginBottom - legendMargin,
       ],
     ])
     .on("end", updateChart);
 
+  // 12. Добавление тултипа для значения на граике
+  const tooltip = d3
+    .select(".chartLine")
+    .append("div")
+    .attr("class", "tooltip");
+
   const Line = svg.append("g").attr("clip-path", "url(#clip)");
 
+  // 13. Отрисовка графика и заливки
   Line.append("path")
     .datum(props.data)
     .attr("class", "line")
     .attr("fill", "none")
-    .attr("stroke-width", strokeWidth)
+    .attr("stroke-width", 1.5)
     .attr("stroke", d3.scaleOrdinal(d3.schemeAccent))
     .attr("d", line);
 
@@ -244,10 +216,10 @@ onMounted(() => {
     .attr("fill-opacity", 0.2)
     .attr("d", ariaChart);
 
-  const dots = Line.append("g");
   const values = Line.append("g");
 
-  dots
+  // 14. Добавление точек на график
+  svg
     .selectAll("circle")
     .data(props.data)
     .enter()
@@ -255,14 +227,29 @@ onMounted(() => {
     .attr("style", "fill: white; stroke: skyblue; cursor: pointer")
     .attr("r", 3)
     .attr("cx", (d) => x(parseTime(d.date)))
-    .attr("cy", (d) => y(d.amount));
+    .attr("cy", (d) => y(d.amount))
+    .on("mouseover", mouseover)
+    .on("mouseout", mouseout)
+    .on("contextmenu", () => console.log('правая кнопка нажата'))
 
+  // 15. Функция наведения тултипа
+  function mouseover(d) {
+    tooltip.append("p").html(d.target.__data__.date);
+    tooltip.append("p").html(d.target.__data__.amount);
+    tooltip.append("p").html(d.target.__data__.test);
+    tooltip.style("display", "block");
+  }
+  // 16. Фукнция удаления тултипа
+  function mouseout() {
+    tooltip.style("display", "none");
+    tooltip.selectAll("p").remove();
+  }
+  // 17. Добавляем значения на график и их форматируем
   values
     .selectAll("text")
     .data(props.data)
     .enter()
     .append("text")
-
     .attr("x", (d) => x(parseTime(d.date)))
     .attr("y", (d) => y(d.amount))
     .attr("text-anchor", textAnchor(props.valuePosition) || "middle")
@@ -281,10 +268,12 @@ onMounted(() => {
 
   Line.append("g").attr("class", "brush").call(brush);
 
+  // 18. Удаляем выделение
   let idleTimeout;
   const idled = () => (idleTimeout = null);
 
-  function updateChart(event, d) {
+  // 19. Функция обновления графика, точек и значений точек
+  function updateChart(event) {
     const extent = event.selection;
 
     if (!extent) {
@@ -299,7 +288,7 @@ onMounted(() => {
     Line.select(".line").transition().duration(1000).attr("d", line);
     Line.select(".aria").transition().duration(1000).attr("d", ariaChart);
 
-    dots
+    svg
       .transition()
       .duration(1000)
       .selectAll("circle")
@@ -314,13 +303,14 @@ onMounted(() => {
       .attr("y", (d) => y(d.amount));
   }
 
+  // 20. Сброс зума
   svg.on("dblclick", () => {
     x.domain(d3.extent(props.data, (d) => parseTime(d.date)));
     axisX.transition().call(d3.axisBottom(x).ticks(20));
     Line.select(".line").transition().attr("d", line);
     Line.select(".aria").transition().attr("d", ariaChart);
 
-    dots
+    svg
       .transition()
       .duration(1000)
       .selectAll("circle")
@@ -335,6 +325,7 @@ onMounted(() => {
       .attr("y", (d) => y(d.amount));
   });
 
+  // 21. Лимитные значения
   const limitValue = svg.append("g");
   if (props.limitValueMin) {
     limitValue
@@ -361,3 +352,17 @@ onMounted(() => {
   }
 });
 </script>
+<style>
+.tooltip {
+  z-index: 10;
+  background: #eee;
+  box-shadow: 0 0 5px #999999;
+  width: fit-content;
+  display: none;
+  text-align: center;
+  padding: 10px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+</style>
