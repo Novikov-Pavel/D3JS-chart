@@ -70,7 +70,7 @@ onMounted(() => {
     .attr("transform", `rotate(${props.rotateXText})`)
     .attr("font-weight", props.fontWeightX ? "bold" : "normal")
     .attr("font-style", props.fontItalicX ? "italic" : "normal")
-    .attr("font-size", props.fontSizeX)
+    .attr("font-size", props.fontSizeX);
 
   const y1 = d3
     .scaleLinear()
@@ -248,8 +248,7 @@ onMounted(() => {
     .attr("fill", "none")
     .attr("stroke-width", 2)
     .attr("stroke", d3.scaleOrdinal(d3.schemeSet1))
-    .attr("d", line1(props.data))
-
+    .attr("d", line1(props.data));
 
   Line.append("path")
     .datum(props.data)
@@ -448,17 +447,17 @@ onMounted(() => {
     Line.select(".aria1").transition().attr("d", ariaChart1);
     Line.select(".aria2").transition().attr("d", ariaChart2);
 
-    gCircle1
+    gCircles
       .transition()
       .duration(1000)
-      .selectAll("circle")
+      .selectAll(".gCircle1")
       .attr("cx", (d) => x(parseTime(d.date)))
       .attr("cy", (d) => y1(d.amount));
 
-    gCircle2
+    gCircles
       .transition()
       .duration(1000)
-      .selectAll("circle")
+      .selectAll(".gCircle2")
       .attr("cx", (d) => x(parseTime(d.date)))
       .attr("cy", (d) => y2(d.y2));
 
