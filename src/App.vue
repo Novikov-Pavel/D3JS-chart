@@ -84,6 +84,9 @@ const data = [
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+}
 .charts {
   display: flex;
   flex-direction: column;
