@@ -40,6 +40,11 @@ onMounted(() => {
   const legendMargin = 70;
   const svg = d3.select("svg");
 
+  const groupDateAmount = d3.group(props.data, (d) => d.dateAmount);
+  const dataAmount = groupDateAmount.get('amount');
+  const groupDateY2 = d3.group(props.data, (d) => d.dateY2);
+  const dataY2 = groupDateY2.get('Y2');
+
   // 1. Позиционирование легенды
   const divChart = svg
     .append("g")
@@ -54,7 +59,7 @@ onMounted(() => {
   //3. Создание осей, форматирование их значений и их названия
   const x = d3
     .scaleTime()
-    .domain(d3.extent(props.data, (d) => parseTime(d.date)))
+    .domain(d3.extent(dataAmount, (d) => parseTime(d.date)))
     .range([props.marginLeft, props.width - props.marginRight]);
 
   const axisX = divChart
@@ -75,7 +80,7 @@ onMounted(() => {
   const y1 = d3
     .scaleLinear()
     .range([props.height - props.marginBottom - legendMargin, props.marginTop]);
-  y1.domain([0, d3.max(props.data, (d) => d.amount)]);
+  y1.domain([0, d3.max(dataAmount, (d) => d.amount)]);
 
   const y2 = d3
     .scaleLinear()
@@ -210,7 +215,7 @@ onMounted(() => {
       .attr("transform", "translate(0," + 15 + ")");
   }
 
-  // 10. Добавление clipPath для выделения при зуме
+  // 10. Добавление clipPath
   svg
     .append("defs")
     .append("svg:clipPath")
@@ -243,30 +248,30 @@ onMounted(() => {
 
   // 13. Отрисовка графиков и заливок
   Line.append("path")
-    .datum(props.data)
+    .datum(dataAmount)
     .attr("class", "line1")
     .attr("fill", "none")
     .attr("stroke-width", 2)
     .attr("stroke", d3.scaleOrdinal(d3.schemeSet1))
-    .attr("d", line1(props.data));
+    .attr("d", line1(dataAmount));
 
   Line.append("path")
-    .datum(props.data)
+    .datum(dataAmount)
     .attr("class", "aria1")
     .attr("fill", d3.scaleOrdinal(d3.schemeSet1))
     .attr("fill-opacity", 0.2)
     .attr("d", ariaChart1);
 
   Line.append("path")
-    .datum(props.data)
+    .datum(dataY2)
     .attr("fill", "none")
     .attr("class", "line2")
     .attr("stroke-width", 2)
     .attr("stroke", d3.scaleOrdinal(d3.schemeSet2))
-    .attr("d", line2(props.data));
+    .attr("d", line2(dataY2));
 
   Line.append("path")
-    .datum(props.data)
+    .datum(dataY2)
     .attr("class", "aria2")
     .attr("fill", d3.scaleOrdinal(d3.schemeSet2))
     .attr("fill-opacity", 0.2)
@@ -280,14 +285,14 @@ onMounted(() => {
 
   const gCircle1 = gCircles
     .selectAll(".gCircle1")
-    .data(props.data)
+    .data(dataAmount)
     .enter()
     .append("circle")
     .attr("class", "gCircle1");
 
   const gCircle2 = gCircles
     .selectAll(".gCircle2")
-    .data(props.data)
+    .data(dataY2)
     .enter()
     .append("circle")
     .attr("class", "gCircle2");
@@ -345,7 +350,7 @@ onMounted(() => {
 
   values1
     .selectAll("text")
-    .data(props.data)
+    .data(dataAmount)
     .enter()
     .append("text")
     .attr("x", (d) => x(parseTime(d.date)))
@@ -366,7 +371,7 @@ onMounted(() => {
 
   values2
     .selectAll("text")
-    .data(props.data)
+    .data(dataY2)
     .enter()
     .append("text")
     .attr("x", (d) => x(parseTime(d.date)))
