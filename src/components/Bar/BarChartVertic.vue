@@ -70,15 +70,6 @@ onMounted(() => {
       .text("Price, $")
   );
 
-  if (props.animation) {
-    svg
-      .selectAll("rect")
-      .transition()
-      .duration(1500)
-      .attr("y", (d) => y(d.amount))
-      .attr("height", (d) => props.height - props.marginBottom - y(d.amount));
-  }
-
   // 10. Добавление clipPath
 
   svg
@@ -102,8 +93,16 @@ onMounted(() => {
     .append("rect")
     .attr("x", (d) => x(d.date))
     .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
-    .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
+    .attr("height", (d) => (props.animation ? y(0) : y(0) - y(d.amount)))
     .attr("width", x.bandwidth());
+
+  if (props.animation) {
+    Bar.selectAll("rect")
+      .transition()
+      .duration(1500)
+      .attr("y", (d) => y(d.amount))
+      .attr("height", (d) => y(0) - y(d.amount));
+  }
 
   // 11. Блок для зума
   const brush = d3
@@ -177,14 +176,15 @@ onMounted(() => {
       Bar.select(".brush").call(brush.move, null);
 
       axisX.transition().duration(1000).call(d3.axisBottom(x));
+
       Bar.selectAll("rect")
         .data(dataAmount[1])
         .join("rect")
         .transition()
         .duration(1000)
         .attr("x", (d) => x(d.date))
-        .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
-        .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
+        .attr("y", (d) => y(d.amount))
+        .attr("height", (d) => y(0) - y(d.amount))
         .attr("width", x.bandwidth());
 
       Bar.select(".brush").call(brush);
@@ -201,9 +201,10 @@ onMounted(() => {
       .transition()
       .duration(1000)
       .attr("x", (d) => x(d.date))
-      .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
-      .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
+      .attr("y", (d) => y(d.amount))
+      .attr("height", (d) => y(0) - y(d.amount))
       .attr("width", x.bandwidth());
+
     Bar.select(".brush").call(brush);
   });
 });
