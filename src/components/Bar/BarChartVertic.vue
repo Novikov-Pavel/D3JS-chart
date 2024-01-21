@@ -84,25 +84,27 @@ onMounted(() => {
   svg
     .append("defs")
     .append("svg:clipPath")
-    .attr("id", "clip")
+    .attr("id", "clipBar")
     .append("svg:rect")
     .attr("width", props.width - props.marginLeft - props.marginRight)
     .attr("height", props.height - props.marginBottom)
     .attr("x", props.marginLeft)
     .attr("y", 0);
 
-  const Bar = svg.append("g").attr("clip-path", "url(#clip)");
+  const Bar = svg.append("g").attr("clip-path", "url(#clipBar)");
 
   const colorDataAmount = d3.scaleOrdinal(d3.schemeCategory10);
 
   Bar.attr("fill", colorDataAmount(dataAmount[0]))
     .selectAll()
     .data(dataAmount[1])
-    .join("rect")
+    .enter()
+    .append("rect")
     .attr("x", (d) => x(d.date))
     .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
     .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
     .attr("width", x.bandwidth());
+
   // 11. Блок для зума
   const brush = d3
     .brushX()
@@ -164,33 +166,29 @@ onMounted(() => {
     } else {
       const dRangeX = extent.map(scaleBandInvert(x));
       const indexMinMax = [];
-      for (let i = 0; i < dRangeX.length; i++) {
+      for (let i in dRangeX) {
         const el = x.domain().indexOf(dRangeX[i]);
         indexMinMax.push(el);
       }
       const arrDates = x.domain().slice(indexMinMax[0], indexMinMax[1]);
-      x.padding(0.6).domain(arrDates);
+      x.domain(arrDates);
+      console.log(arrDates.length);
+      arrDates.length < 4 ? x.padding(0.9) : x.padding(0.6);
       Bar.select(".brush").call(brush.move, null);
+
+      axisX.transition().duration(1000).call(d3.axisBottom(x));
+      Bar.selectAll("rect")
+        .data(dataAmount[1])
+        .join("rect")
+        .transition()
+        .duration(1000)
+        .attr("x", (d) => x(d.date))
+        .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
+        .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
+        .attr("width", x.bandwidth());
+
+      Bar.select(".brush").call(brush);
     }
-
-    axisX.transition().duration(1000).call(d3.axisBottom(x));
-    Bar.selectAll("rect")
-      .data(dataAmount[1])
-      .join("rect")
-      .transition()
-      .duration(1000)
-      .attr("x", (d) => x(d.date))
-      .attr("y", (d) => (props.animation ? y(0) : y(d.amount)))
-      .attr("height", (d) => (props.animation ? 0 : y(0) - y(d.amount)))
-      .attr("width", x.bandwidth());
-
-    Bar.select(".brush").call(brush);
-    // values1
-    //   .transition()
-    //   .duration(1000)
-    //   .selectAll("text")
-    //   .attr("x", (d) => x(parseTime(d.date)))
-    //   .attr("y", (d) => y1(d.amount));
   }
 
   // 20. Сброс зума
