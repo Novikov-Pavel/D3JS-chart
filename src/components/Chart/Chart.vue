@@ -446,11 +446,11 @@ onMounted(() => {
   // 20. Сброс зума
   svg.on("dblclick", () => {
     x.domain(d3.extent(props.data, (d) => parseTime(d.date)));
-    axisX.transition().call(d3.axisBottom(x).ticks(20));
-    Line.select(".line1").transition().attr("d", line1);
-    Line.select(".line2").transition().attr("d", line2);
-    Line.select(".aria1").transition().attr("d", ariaChart1);
-    Line.select(".aria2").transition().attr("d", ariaChart2);
+    axisX.transition().duration(1000).call(d3.axisBottom(x).ticks(20));
+    Line.select(".line1").transition().duration(1000).attr("d", line1);
+    Line.select(".line2").transition().duration(1000).attr("d", line2);
+    Line.select(".aria1").transition().duration(1000).attr("d", ariaChart1);
+    Line.select(".aria2").transition().duration(1000).attr("d", ariaChart2);
 
     gCircles
       .transition()
