@@ -103,7 +103,7 @@ onMounted(() => {
   );
 
   const Bar = svg.append("g");
-
+  const brushG = Bar.append("g").attr("class", "brush");
   const colorDataAmount = d3.scaleOrdinal(d3.schemeCategory10);
 
   Bar.attr("fill", colorDataAmount(dateAmount[0]))
@@ -141,22 +141,25 @@ onMounted(() => {
       .attr("height", (d) => y(0) - y(d.amount));
   }
 
-  const tooltip = d3.select('.chartVert').append("div").attr("class", "tooltip");
+  const tooltip = d3
+    .select(".chartVert")
+    .append("div")
+    .attr("class", "tooltip");
 
   // 15. Функция наведения тултипа
-  // function mouseover(d) {
-  //   let coords = d3.pointer(d);
-  //   if (d.x === coords[0] && d.y === coords[1]) {
-  //     tooltip.append("p").html(d.target.__data__.date);
-  //     tooltip.append("p").html(d.target.__data__.amount);
-  //     tooltip.append("p").html(d.target.__data__.test);
-  //     tooltip.style("display", "block");
-  //   }
-  // }
-  // function mouseout() {
-  //   tooltip.style("display", "none");
-  //   tooltip.selectAll("p").remove();
-  // }
+  function mouseover(d) {
+    let coords = d3.pointer(d);
+    if (d.x === coords[0] && d.y === coords[1]) {
+      tooltip.append("p").html(d.target.__data__.date);
+      tooltip.append("p").html(d.target.__data__.amount);
+      tooltip.append("p").html(d.target.__data__.test);
+      tooltip.style("display", "block");
+    }
+  }
+  function mouseout() {
+    tooltip.style("display", "none");
+    tooltip.selectAll("p").remove();
+  }
 
   // Легенда
   const sizeLegend = 20;
@@ -189,9 +192,9 @@ onMounted(() => {
       [props.marginLeft, props.marginTop],
       [props.width - props.marginRight, props.height - props.marginBottom],
     ])
-    .on("end", updateChart)
+    .on("end", updateChart);
 
-  Bar.append("g").attr("class", "brush").call(brush);
+  brushG.call(brush);
 
   // 18. Удаляем выделение
   let idleTimeout;
@@ -277,6 +280,7 @@ onMounted(() => {
         .enter()
         .append("rect")
         .on("mouseover", mouseover)
+        .on("mouseout", mouseout)
         .attr("y", (d) => y(d.amount))
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())
@@ -291,7 +295,6 @@ onMounted(() => {
         .data(filteredData)
         .enter()
         .append("text")
-        .on("mouseover", () => console.log("e"))
         .attr("text-anchor", "middle")
         .attr("x", (d) => x(d.date) + x.bandwidth() / 2)
         .text((d) => d.amount)
@@ -318,6 +321,8 @@ onMounted(() => {
       .append("rect")
       .transition()
       .duration(1000)
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout)
       .attr("x", (d) => x(d.date))
       .attr("y", (d) => y(d.amount))
       .attr("height", (d) => y(0) - y(d.amount))
