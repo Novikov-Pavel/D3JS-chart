@@ -29,11 +29,11 @@ const props = defineProps({
   fontWeightY: Boolean,
   fontWeightValues: Boolean,
   fontItalicValues: Boolean,
+  fontSizeValue: Number,
   fontItalicX: Boolean,
   fontSizeX: Number,
   fontItalicY: Boolean,
   fontSizeY: Number,
-  fontSizeValue: Number,
 });
 
 onMounted(() => {
