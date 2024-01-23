@@ -102,12 +102,11 @@ onMounted(() => {
       .text("Price, $")
   );
 
-  const Bar = svg.append("g");
-  const brushG = Bar.append("g").attr("class", "brush");
   const colorDataAmount = d3.scaleOrdinal(d3.schemeCategory10);
+  const Bar = svg.append("g").attr("fill", colorDataAmount(dateAmount[0]));
+  const brushG = Bar.append("g").attr("class", "brush");
 
-  Bar.attr("fill", colorDataAmount(dateAmount[0]))
-    .selectAll("rect")
+  Bar.selectAll("rect")
     .data(dateAmount)
     .enter()
     .append("rect")
@@ -118,8 +117,7 @@ onMounted(() => {
     .attr("height", (d) => (props.animation ? y(0) : y(0) - y(d.amount)))
     .attr("width", x.bandwidth());
 
-  Bar.attr("fill", colorDataAmount(dateAmount[0]))
-    .selectAll("text")
+  Bar.selectAll("text")
     .data(dateAmount)
     .enter()
     .append("text")
@@ -144,17 +142,15 @@ onMounted(() => {
   const tooltip = d3
     .select(".chartVert")
     .append("div")
-    .attr("class", "tooltip");
+    .style("position", "absolute");
 
   // 15. Функция наведения тултипа
   function mouseover(d) {
-    let coords = d3.pointer(d);
-    if (d.x === coords[0] && d.y === coords[1]) {
-      tooltip.append("p").html(d.target.__data__.date);
-      tooltip.append("p").html(d.target.__data__.amount);
-      tooltip.append("p").html(d.target.__data__.test);
-      tooltip.style("display", "block");
-    }
+    tooltip.append("p").html(d.target.__data__.date);
+    tooltip.append("p").html(d.target.__data__.amount);
+    tooltip.append("p").html(d.target.__data__.test);
+    tooltip.style("display", "block");
+    tooltip.style("top", "0");
   }
   function mouseout() {
     tooltip.style("display", "none");
@@ -319,14 +315,14 @@ onMounted(() => {
       .data(dateAmount)
       .enter()
       .append("rect")
-      .transition()
-      .duration(1000)
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
       .attr("x", (d) => x(d.date))
       .attr("y", (d) => y(d.amount))
       .attr("height", (d) => y(0) - y(d.amount))
-      .attr("width", x.bandwidth());
+      .attr("width", x.bandwidth())
+      .transition()
+      .duration(1000);
 
     Bar.selectAll("text").remove();
 
@@ -383,3 +379,8 @@ onMounted(() => {
   }
 });
 </script>
+<style>
+.chartVert {
+  position: relative;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="charts">
-    <!-- <Chart
+    <Chart
       :width="width"
       :height="height"
       :margin-top="marginTop"
@@ -27,7 +27,7 @@
       :font-italic-y="false"
       :font-weight-values="false"
       :font-italic-values="false"
-    /> -->
+    />
     <!-- <LineWithTooltip /> -->
     <BarChartVertic
       :width="width"
@@ -87,13 +87,15 @@ const data = [
     y2: 0,
     test: "3rdObj1",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "25-Apr-07",
     amount: 95.35,
     y2: 2,
     test: "3rdObj2",
-    dateAmount: "am1ount",
+    dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "26-Apr-07",
@@ -101,6 +103,7 @@ const data = [
     y2: 3,
     test: "3rdObj3",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "27-Apr-07",
@@ -108,6 +111,7 @@ const data = [
     y2: 1,
     test: "3rdObj4",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "30-Apr-07",
@@ -115,6 +119,7 @@ const data = [
     y2: 0,
     test: "3rdObj5",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "1-May-07",
@@ -122,6 +127,7 @@ const data = [
     y2: 1,
     test: "3rdObj6",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "2-May-07",
@@ -129,6 +135,7 @@ const data = [
     y2: 2,
     test: "3rdObj7",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "3-May-07",
@@ -136,6 +143,7 @@ const data = [
     y2: 1,
     test: "3rdObj8",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "4-May-07",
@@ -143,6 +151,7 @@ const data = [
     y2: 1,
     test: "3rdObj9",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "7-May-07",
@@ -150,6 +159,7 @@ const data = [
     y2: 3,
     test: "3rdObj10",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "8-May-07",
@@ -157,6 +167,7 @@ const data = [
     y2: 3,
     test: "3rdObj11",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "9-May-07",
@@ -164,6 +175,7 @@ const data = [
     y2: 0,
     test: "3rdObj12",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
   {
     date: "10-May-07",
@@ -171,6 +183,7 @@ const data = [
     y2: 2,
     test: "3rdObj13",
     dateAmount: "amount",
+    dateY2: "Y2",
   },
 ];
 </script>

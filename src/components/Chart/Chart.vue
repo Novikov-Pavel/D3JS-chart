@@ -41,7 +41,8 @@ onMounted(() => {
   const svg = d3.select("svg");
 
   const groupDateAmount = d3.group(props.data, (d) => d.dateAmount);
-  const dataAmount = groupDateAmount.get('amount');
+  const dataAmount = groupDateAmount.get("amount");
+
   const groupDateY2 = d3.group(props.data, (d) => d.dateY2);
   const dataY2 = groupDateY2.get('Y2');
 
