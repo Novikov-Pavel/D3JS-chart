@@ -1,6 +1,6 @@
 <template>
   <div class="charts">
-    <Chart
+    <!-- <Chart
       :width="width"
       :height="height"
       :margin-top="marginTop"
@@ -27,7 +27,7 @@
       :font-italic-y="false"
       :font-weight-values="false"
       :font-italic-values="false"
-    />
+    /> -->
     <!-- <LineWithTooltip /> -->
     <BarChartVertic
       :width="width"
@@ -39,16 +39,16 @@
       :data="data"
       label-y="amount"
       :animation="false"
-      :font-weight-x="true"
+      :font-weight-x="false"
       :font-italic-x="true"
-      :font-size-x="12"
+      :font-size-x="10"
       :font-weight-y="true"
       :font-size-y="12"
       :font-size-value="12"
       :font-italic-y="true"
       :font-weight-values="true"
       :font-italic-values="true"
-      :rotate-x-text="45"
+      :rotate-x-text="0"
       :rotate-y-text="45"
       :limit-value-min="10"
       :limit-value-max="20"
@@ -89,7 +89,7 @@ const data = [
     dateAmount: "amount",
     dateY2: "Y2",
   },
-  {
+  { 
     date: "25-Apr-07",
     amount: 95.35,
     y2: 2,
