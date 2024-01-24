@@ -12,7 +12,7 @@
       :font-weight="fontWeightX ? 'bold' : 'normal'"
       :font-style="fontItalicX ? 'italic' : 'normal'"
       :font-size="fontSizeX"
-    ></g>
+    />
     <g
       class="yAxis"
       :transform="`translate(${marginLeft}, 0)`"
@@ -24,36 +24,36 @@
         {{ labelY }}
       </text>
     </g>
-    <g class="rects" :fill="colorDataAmount(dateAmount[0])">
-      <g class="brush"></g>
-      <rect
+    <g class="rects" :fill="colorDataAmount(groupDateAmount[0])">
+      <g class="brush" />
+      <g
         v-for="(dataSet, i) in dateAmount"
         :key="x(dataSet.date)"
         @pointerover="tooltip = i"
         @pointerleave="tooltip = null"
-        :x="x(dataSet.date)"
-        :y="animation ? y(0) : y(dataSet.amount)"
-        :height="animation ? 0 : y(0) - y(dataSet.amount)"
-        :width="x.bandwidth()"
-      />
-      <text
-        v-for="(dataSet, i) in dateAmount"
-        :key="x(dataSet.date)"
-        @pointerover="tooltip = i"
-        @pointerleave="tooltip = null"
-        text-anchor="middle"
-        :y="animation ? y(0) : y(dataSet.amount) - x.bandwidth() / 10"
-        :font-weight="fontWeightValues ? 'bold' : 'normal'"
-        :font-style="fontItalicValues ? 'italic' : 'normal'"
-        :font-size="fontSizeValue"
-        :x="x(dataSet.date) + x.bandwidth() / 2"
       >
-        {{ dataSet.amount }}
-      </text>
+        <rect
+          :x="x(dataSet.date)"
+          :y="animation ? y(0) : y(dataSet.amount)"
+          :height="animation ? 0 : y(0) - y(dataSet.amount)"
+          :width="x.bandwidth()"
+        />
+        <text
+          text-anchor="middle"
+          :x="x(dataSet.date) + x.bandwidth() / 2"
+          :y="animation ? y(0) : y(dataSet.amount) - x.bandwidth() / 10"
+          :font-weight="fontWeightValues ? 'bold' : 'normal'"
+          :font-style="fontItalicValues ? 'italic' : 'normal'"
+          :font-size="fontSizeValue"
+        >
+          {{ dataSet.amount }}
+        </text>
+      </g>
     </g>
     <g
-      :fill="colorDataAmount(dateAmount[0])"
+      :fill="colorDataAmount(groupDateAmount[0])"
       v-for="(rect, i) in groupDateAmount"
+      :key="rect[i]"
     >
       <rect
         class="rectLegend"
@@ -68,23 +68,17 @@
         :y="height - legendSpace / 2 + i * sizeLegend"
         alignment-baseline="hanging"
       >
-        {{ rect[0] }}
+        {{ rect[i] }}
       </text>
     </g>
     <g stroke-dasharray="5 1" stroke="black" stroke-width="1px">
       <line
-        v-if="limitValueMin"
+        v-for="limit in limitValue"
+        :key="limit"
         :x1="marginLeft"
-        :y1="y(limitValueMin)"
+        :y1="y(limit)"
         :x2="width - marginRight"
-        :y2="y(limitValueMin)"
-      />
-      <line
-        v-if="limitValueMax"
-        :x1="marginLeft"
-        :y1="y(limitValueMax)"
-        :x2="width - marginRight"
-        :y2="y(limitValueMax)"
+        :y2="y(limit)"
       />
     </g>
     <g v-for="(item, i) in dateAmount" v-show="tooltip === i">
@@ -130,11 +124,9 @@ const props = defineProps({
   fontSizeX: Number,
   fontItalicY: Boolean,
   fontSizeY: Number,
-  limitValueMin: Number,
-  limitValueMax: Number,
+  limitValue: Array,
   labelY: String,
 });
-
 const svg = d3.select(".chartVert");
 const sizeLegend = 20;
 const legendSpace = 40;
@@ -259,10 +251,7 @@ onMounted(() => {
 });
 </script>
 <style>
-.chartVert {
-  position: relative;
-}
-rect {
+.rects {
   cursor: pointer;
 }
 </style>

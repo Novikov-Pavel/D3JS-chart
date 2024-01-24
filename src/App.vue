@@ -50,8 +50,7 @@
       :font-italic-values="true"
       :rotate-x-text="0"
       :rotate-y-text="45"
-      :limit-value-min="10"
-      :limit-value-max="20"
+      :limit-value="[10, 20]"
     />
     <!-- <BarChartHoriz
       :width="width"
