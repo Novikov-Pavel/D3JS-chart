@@ -1,14 +1,13 @@
 <template>
   <svg
     @dblclick="dblclick"
-    class="chartVert"
     :width="width"
     :height="height"
     :view-box="`0 0 ${width} ${height}`"
   >
     <g
       class="xAxis"
-      :transform="`translate(0,${height - marginBottom - props.legendSpace})`"
+      :transform="`translate(0,${height - marginBottom - legendSpace})`"
       :font-weight="fontWeightX ? 'bold' : 'normal'"
       :font-style="fontItalicX ? 'italic' : 'normal'"
       :font-size="fontSizeX"
@@ -24,7 +23,11 @@
         {{ labelY }}
       </text>
     </g>
-    <g class="rects" :fill="colorDataAmount(groupDateAmount[0])">
+    <g
+      v-if="typeChart === 'Bar'"
+      class="rects"
+      :fill="colorDataAmount(groupDateAmount[0])"
+    >
       <g class="brush" />
       <g
         v-for="(dataSet, i) in newDateAmount"
@@ -61,27 +64,33 @@
       </g>
     </g>
     <g
-      :fill="colorDataAmount(groupDateAmount[0])"
+      v-if="legendSpace"
       v-for="(rect, i) in groupDateAmount"
       :key="rect[i]"
+      :fill="colorDataAmount(groupDateAmount[0])"
     >
       <rect
         class="rectLegend"
-        :x="props.marginLeft"
-        :y="props.height - props.legendSpace / 2 + i * props.sizeLegend"
-        :width="props.sizeLegend"
-        :height="props.sizeLegend"
+        :x="marginLeft"
+        :y="height - legendSpace / 2 + i * sizeLegend"
+        :width="sizeLegend"
+        :height="sizeLegend"
       />
       <text
         class="labelLegend"
-        :x="marginLeft + props.sizeLegend * 1.5"
-        :y="height - props.legendSpace / 2 + i * props.sizeLegend"
-        alignment-baseline="hanging"
+        :x="marginLeft + sizeLegend * 1.5"
+        :y="height - legendSpace / 2 + i * sizeLegend"
+        alignment-baseline="before-edge"
       >
         {{ rect[i] }}
       </text>
     </g>
-    <g stroke-dasharray="5 1" stroke="black" stroke-width="1px">
+    <g
+      v-if="limitValue"
+      stroke-dasharray="5 1"
+      stroke="black"
+      stroke-width="1px"
+    >
       <line
         v-for="limit in limitValue"
         :key="limit"
@@ -134,10 +143,11 @@ const props = defineProps({
   labelY: String,
   legendSpace: Number,
   sizeLegend: Number,
+  schemeCategory: Object,
+  typeChart: String,
 });
 
-const svg = d3.select(".chartVert");
-const colorDataAmount = d3.scaleOrdinal(d3.schemeCategory10);
+const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
 
 const tooltip = ref(null);
 

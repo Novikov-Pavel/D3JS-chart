@@ -8,14 +8,12 @@ const newDateAmount = computed(() =>
   dateAmount.value.map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs)
 );
 
-const x = d3
-  .scaleBand()
+const x = config.scaleX()
   .domain(newDateAmount.value.map((d) => d.date))
   .range([config.marginLeft, config.width - config.marginRight])
   .padding(0.3);
 
-const y = d3
-  .scaleLinear()
+const y = config.scaleY()
   .domain([0, d3.max(newDateAmount.value, (d) => d.amount)])
   .range([
     config.height - config.marginBottom - config.legendSpace,
