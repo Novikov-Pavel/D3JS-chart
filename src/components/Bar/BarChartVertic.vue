@@ -27,7 +27,7 @@
     <g class="rects" :fill="colorDataAmount(groupDateAmount[0])">
       <g class="brush" />
       <g
-        v-for="(dataSet, i) in dateAmount"
+        v-for="(dataSet, i) in newDateAmount"
         :key="x(dataSet.date)"
         @pointerover="tooltip = i"
         @pointerleave="tooltip = null"
@@ -47,6 +47,16 @@
           :font-size="fontSizeValue"
         >
           {{ dataSet.amount }}
+        </text>
+        <text :x="x(dataSet.date)" :y="y(dataSet.amount)" v-if="tooltip === i">
+          <tspan
+            :x="x(dataSet.date)"
+            :dy="-20"
+            v-for="itemTooltip in dataSet"
+            key="itemTooltip"
+          >
+            {{ itemTooltip }}
+          </tspan>
         </text>
       </g>
     </g>
@@ -80,19 +90,6 @@
         :x2="width - marginRight"
         :y2="y(limit)"
       />
-    </g>
-    <g v-for="(item, i) in dateAmount" v-show="tooltip === i">
-      <text :x="x(item.date)" :y="y(item.amount)">
-        <tspan :x="x(item.date)" :dy="-20">
-          {{ item.test }}
-        </tspan>
-        <tspan :x="x(item.date)" :dy="-20">
-          {{ item.amount }}
-        </tspan>
-        <tspan :x="x(item.date)" :dy="-20">
-          {{ item.date }}
-        </tspan>
-      </text>
     </g>
   </svg>
 </template>
@@ -133,16 +130,19 @@ const legendSpace = 40;
 const colorDataAmount = d3.scaleOrdinal(d3.schemeCategory10);
 const groupDateAmount = ref(d3.group(props.data, (d) => d.dateAmount));
 const dateAmount = computed(() => groupDateAmount.value.get("amount"));
+const newDateAmount = computed(() =>
+  dateAmount.value.map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs)
+);
 
 const x = d3
   .scaleBand()
-  .domain(dateAmount.value.map((d) => d.date))
+  .domain(newDateAmount.value.map((d) => d.date))
   .range([props.marginLeft, props.width - props.marginRight])
   .padding(0.3);
 
 const y = d3
   .scaleLinear()
-  .domain([0, d3.max(dateAmount.value, (d) => d.amount)])
+  .domain([0, d3.max(newDateAmount.value, (d) => d.amount)])
   .range([props.height - props.marginBottom - legendSpace, props.marginTop]);
 
 const tooltip = ref(null);
@@ -151,7 +151,7 @@ function aminationBars() {
   const Bar = d3.select(".rects");
   if (props.animation) {
     Bar.selectAll("rect")
-      .data(dateAmount.value)
+      .data(newDateAmount.value)
       .join("rect")
       .transition()
       .duration(1500)
@@ -159,7 +159,7 @@ function aminationBars() {
       .attr("height", (d) => y(0) - y(d.amount));
 
     Bar.selectAll("text")
-      .data(dateAmount.value)
+      .data(newDateAmount.value)
       .join("text")
       .transition()
       .duration(1500)
@@ -212,7 +212,7 @@ function updateChart(event) {
 
     d3.select(".brush").call(brush.move, null);
 
-    const filteredData = dateAmount.value.filter((item) =>
+    const filteredData = newDateAmount.value.filter((item) =>
       arrDates.includes(item.date)
     );
 
