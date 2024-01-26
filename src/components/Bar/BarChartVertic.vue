@@ -8,7 +8,7 @@
   >
     <g
       class="xAxis"
-      :transform="`translate(0,${height - marginBottom - legendSpace})`"
+      :transform="`translate(0,${height - marginBottom - props.legendSpace})`"
       :font-weight="fontWeightX ? 'bold' : 'normal'"
       :font-style="fontItalicX ? 'italic' : 'normal'"
       :font-size="fontSizeX"
@@ -53,7 +53,7 @@
             :x="x(dataSet.date)"
             :dy="-20"
             v-for="itemTooltip in dataSet"
-            key="itemTooltip"
+            :key="itemTooltip"
           >
             {{ itemTooltip }}
           </tspan>
@@ -67,15 +67,15 @@
     >
       <rect
         class="rectLegend"
-        :x="marginLeft"
-        :y="height - legendSpace / 2 + i * sizeLegend"
-        :width="sizeLegend"
-        :height="sizeLegend"
+        :x="props.marginLeft"
+        :y="props.height - props.legendSpace / 2 + i * props.sizeLegend"
+        :width="props.sizeLegend"
+        :height="props.sizeLegend"
       />
       <text
         class="labelLegend"
-        :x="marginLeft + sizeLegend * 1.5"
-        :y="height - legendSpace / 2 + i * sizeLegend"
+        :x="marginLeft + props.sizeLegend * 1.5"
+        :y="height - props.legendSpace / 2 + i * props.sizeLegend"
         alignment-baseline="hanging"
       >
         {{ rect[i] }}
@@ -95,8 +95,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
 import * as d3 from "d3";
+import { onMounted, ref } from "vue";
+import { brush } from "../helpers/brush";
+import { x, y, newDateAmount, groupDateAmount } from "../helpers/Coords";
+import animationBars from "../helpers/animationBars";
+import dblclick from "../helpers/dblClick";
 
 const props = defineProps({
   data: Array,
@@ -123,113 +127,14 @@ const props = defineProps({
   fontSizeY: Number,
   limitValue: Array,
   labelY: String,
+  legendSpace: Number,
+  sizeLegend: Number,
 });
+
 const svg = d3.select(".chartVert");
-const sizeLegend = 20;
-const legendSpace = 40;
 const colorDataAmount = d3.scaleOrdinal(d3.schemeCategory10);
-const groupDateAmount = ref(d3.group(props.data, (d) => d.dateAmount));
-const dateAmount = computed(() => groupDateAmount.value.get("amount"));
-const newDateAmount = computed(() =>
-  dateAmount.value.map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs)
-);
-
-const x = d3
-  .scaleBand()
-  .domain(newDateAmount.value.map((d) => d.date))
-  .range([props.marginLeft, props.width - props.marginRight])
-  .padding(0.3);
-
-const y = d3
-  .scaleLinear()
-  .domain([0, d3.max(newDateAmount.value, (d) => d.amount)])
-  .range([props.height - props.marginBottom - legendSpace, props.marginTop]);
 
 const tooltip = ref(null);
-
-function aminationBars() {
-  const Bar = d3.select(".rects");
-  if (props.animation) {
-    Bar.selectAll("rect")
-      .data(newDateAmount.value)
-      .join("rect")
-      .transition()
-      .duration(1500)
-      .attr("y", (d) => y(d.amount))
-      .attr("height", (d) => y(0) - y(d.amount));
-
-    Bar.selectAll("text")
-      .data(newDateAmount.value)
-      .join("text")
-      .transition()
-      .duration(1500)
-      .attr("y", (d) => y(d.amount) - x.bandwidth() / 10);
-  }
-}
-
-const brush = d3
-  .brushX()
-  .extent([
-    [props.marginLeft, props.marginTop],
-    [props.width - props.marginRight, props.height - props.marginBottom],
-  ])
-  .on("end", updateChart);
-
-let idleTimeout;
-const idled = () => (idleTimeout = null);
-
-function updateChart(event) {
-  const extent = event.selection;
-
-  function scaleBandInvert(scale) {
-    const domain = scale.domain();
-    const paddingOuter = scale.paddingOuter();
-    const eachBand = (scale.step() - scale.bandwidth()) / 2 + scale.bandwidth();
-    return function (value) {
-      let index = Math.floor((value - paddingOuter) / eachBand) - 1;
-      return domain[Math.max(0, Math.min(index, domain.length - 1))];
-    };
-  }
-
-  if (!extent) {
-    if (!idleTimeout) return (idleTimeout = setTimeout(idled, 350));
-  } else {
-    const dRangeX = extent.map(scaleBandInvert(x));
-    const indexMinMax = [];
-    for (let i in dRangeX) {
-      const el = x.domain().indexOf(dRangeX[i]);
-      indexMinMax.push(el);
-    }
-    const arrDates = x
-      .domain()
-      .slice(
-        indexMinMax[0],
-        indexMinMax[1] === x.domain().length - 1 ||
-          indexMinMax[0] === indexMinMax[1]
-          ? indexMinMax[1] + 1
-          : indexMinMax[1]
-      );
-
-    d3.select(".brush").call(brush.move, null);
-
-    const filteredData = newDateAmount.value.filter((item) =>
-      arrDates.includes(item.date)
-    );
-
-    groupDateAmount.value.set("amount", filteredData);
-
-    x.domain(arrDates);
-    d3.select(".xAxis").call(d3.axisBottom(x));
-  }
-}
-
-function dblclick() {
-  groupDateAmount.value = d3.group(props.data, (d) => d.dateAmount);
-  const newDateAmount = computed(() => groupDateAmount.value.get("amount"));
-  x.domain(newDateAmount.value.map((d) => d.date)).padding(0.3);
-  d3.select(".xAxis").call(d3.axisBottom(x));
-  d3.select(".rects").select(".brush").call(brush);
-}
 
 onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));
@@ -246,7 +151,7 @@ onMounted(() => {
     .selectAll("text")
     .attr("transform", `rotate(${props.rotateYText})`);
 
-  aminationBars();
+  animationBars();
   d3.select(".brush").call(brush);
 });
 </script>

@@ -29,29 +29,7 @@
       :font-italic-values="false"
     /> -->
     <!-- <LineWithTooltip /> -->
-    <BarChartVertic
-      :width="width"
-      :height="height"
-      :margin-top="marginTop"
-      :margin-right="marginRight"
-      :margin-bottom="marginBottom"
-      :margin-left="marginLeft"
-      :data="data"
-      label-y="amount"
-      :animation="false"
-      :font-weight-x="false"
-      :font-italic-x="true"
-      :font-size-x="10"
-      :font-weight-y="true"
-      :font-size-y="12"
-      :font-size-value="12"
-      :font-italic-y="true"
-      :font-weight-values="true"
-      :font-italic-values="true"
-      :rotate-x-text="0"
-      :rotate-y-text="45"
-      :limit-value="[10, 20]"
-    />
+    <BarChartVertic v-bind="config" />
     <!-- <BarChartHoriz
       :width="width"
       :height="height"
@@ -72,119 +50,7 @@ import {
   BarChartVertic,
   BarChartHoriz,
 } from "./components";
-
-const width = 800;
-const height = 500;
-const marginTop = 50;
-const marginRight = 30;
-const marginBottom = 30;
-const marginLeft = 60;
-const data = [
-  {
-    date: "24-Apr-07",
-    amount: 93.24,
-    y2: 0,
-    test: "3rdObj1",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  { 
-    date: "25-Apr-07",
-    amount: 95.35,
-    y2: 2,
-    test: "3rdObj2",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "26-Apr-07",
-    amount: 98.84,
-    y2: 3,
-    test: "3rdObj3",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "27-Apr-07",
-    amount: 99.92,
-    y2: 1,
-    test: "3rdObj4",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "30-Apr-07",
-    amount: 99.8,
-    y2: 0,
-    test: "3rdObj5",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "1-May-07",
-    amount: 99.47,
-    y2: 1,
-    test: "3rdObj6",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "2-May-07",
-    amount: 100.39,
-    y2: 2,
-    test: "3rdObj7",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "3-May-07",
-    amount: 100.4,
-    y2: 1,
-    test: "3rdObj8",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "4-May-07",
-    amount: 100.81,
-    y2: 1,
-    test: "3rdObj9",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "7-May-07",
-    amount: 103.92,
-    y2: 3,
-    test: "3rdObj10",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "8-May-07",
-    amount: 105.06,
-    y2: 3,
-    test: "3rdObj11",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "9-May-07",
-    amount: 106.88,
-    y2: 0,
-    test: "3rdObj12",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-  {
-    date: "10-May-07",
-    amount: 127.34,
-    y2: 2,
-    test: "3rdObj13",
-    dateAmount: "amount",
-    dateY2: "Y2",
-  },
-];
+import config from "./components/config";
 </script>
 
 <style lang="scss">
