@@ -10,14 +10,12 @@
       :transform="`translate(0,${height - marginBottom - legendSpace})`"
       :font-weight="fontWeightX ? 'bold' : 'normal'"
       :font-style="fontItalicX ? 'italic' : 'normal'"
-      :font-size="fontSizeX"
     />
     <g
       class="yAxis"
       :transform="`translate(${marginLeft}, 0)`"
       :font-weight="fontWeightY ? 'bold' : 'normal'"
       :font-style="fontItalicY ? 'italic' : 'normal'"
-      :font-size="fontSizeY"
     >
       <text fill="currentColor" text-anchor="end" :y="marginTop / 2">
         {{ labelY }}
@@ -155,16 +153,16 @@ onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));
 
   axisX
-    .selectAll(".tick")
-    .selectAll("text")
-    .attr("transform", `rotate(${props.rotateXText})`);
+    .selectAll(".tick text")
+    .attr("transform", `rotate(${props.rotateXText})`)
+    .attr("font-size", props.fontSizeX);
 
   const yAxis = d3.select(".yAxis").call(d3.axisLeft(y));
 
   yAxis
-    .selectAll(".tick")
-    .selectAll("text")
-    .attr("transform", `rotate(${props.rotateYText})`);
+    .selectAll(".tick text")
+    .attr("transform", `rotate(${props.rotateYText})`)
+    .attr("font-size", props.fontSizeY);
 
   animationBars();
   d3.select(".brush").call(brush);
