@@ -129,8 +129,8 @@ export default {
   limitValue: [10, 20],
   legendSpace: 40,
   sizeLegend: 20,
-  scaleX: d3.scaleBand,
-  scaleY: d3.scaleLinear,
+  scaleX: () => d3.scaleBand(),
+  scaleY: () => d3.scaleLinear(),
   schemeCategory: d3.schemeCategory10,
   typeChart: "Bar",
 };
