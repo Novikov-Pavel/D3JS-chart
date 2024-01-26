@@ -1,12 +1,10 @@
 import * as d3 from "d3";
-import { brush } from "./brush";
-import { x, newDateAmount, groupDateAmount } from "./Coords";
-import animationBars from "./animationBars";
+import { animationBars, brush, groupDateAmount, newDateAmount, x } from "./";
 
 let idleTimeout;
 const idled = () => (idleTimeout = null);
 
-export default function updateChart(event) {
+export function updateChart(event) {
   const extent = event.selection;
 
   function scaleBandInvert(scale) {

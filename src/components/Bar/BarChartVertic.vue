@@ -97,10 +97,15 @@
 <script setup>
 import * as d3 from "d3";
 import { onMounted, ref } from "vue";
-import { brush } from "../helpers/brush";
-import { x, y, newDateAmount, groupDateAmount } from "../helpers/Coords";
-import animationBars from "../helpers/animationBars";
-import dblclick from "../helpers/dblClick";
+import {
+  animationBars,
+  brush,
+  dblclick,
+  groupDateAmount,
+  newDateAmount,
+  x,
+  y,
+} from "../helpers/";
 
 const props = defineProps({
   data: Array,

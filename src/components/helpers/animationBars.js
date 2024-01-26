@@ -1,7 +1,7 @@
 import config from "../config";
 import * as d3 from "d3";
 
-export default function animationBars() {
+export function animationBars() {
   const Bar = d3.select(".rects");
   if (config.animation) {
     Bar.selectAll("rect")
