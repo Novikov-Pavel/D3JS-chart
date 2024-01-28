@@ -83,12 +83,21 @@
         {{ rect[i] }}
       </text>
     </g>
-    <g
-      v-if="limitValue"
-      stroke-dasharray="5 1"
-      stroke="black"
-      stroke-width="1px"
-    >
+    <g v-if="limitValue" stroke="black">
+      <defs>
+        <marker
+          id="arrowStart"
+          refX="3"
+          refY="3"
+          markerWidth="6"
+          markerHeight="6"
+        >
+          <circle cx="3" cy="3" r="2" />
+        </marker>
+        <marker id="arrowEnd" refY="5" markerWidth="12" markerHeight="12">
+          <path d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+      </defs>
       <line
         v-for="limit in limitValue"
         :key="limit"
@@ -96,6 +105,9 @@
         :y1="y(limit)"
         :x2="width - marginRight"
         :y2="y(limit)"
+        stroke-dasharray="15 5"
+        marker-start="url(#arrowStart)"
+        marker-end="url(#arrowEnd)"
       />
     </g>
   </svg>
