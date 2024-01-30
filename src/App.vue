@@ -1,55 +1,11 @@
 <template>
   <div class="charts">
-    <!-- <Chart
-      :width="width"
-      :height="height"
-      :margin-top="marginTop"
-      :margin-right="marginRight"
-      :margin-bottom="marginBottom"
-      :margin-left="marginLeft"
-      :data="data"
-      :legend="true"
-      label-y="amount"
-      position-legend="bottom"
-      :limit-value-min="10"
-      :limit-value-max="20"
-      :aria-chart="true"
-      value-position="top"
-      value-category="value"
-      :rotate-x-text="0"
-      :rotate-y-text="0"
-      :font-weight-x="false"
-      :font-italic-x="false"
-      :font-size-x="12"
-      :font-weight-y="false"
-      :font-size-y="12"
-      :font-size-value="12"
-      :font-italic-y="false"
-      :font-weight-values="false"
-      :font-italic-values="false"
-    /> -->
-    <!-- <LineWithTooltip /> -->
-    <BarChartVertic v-bind="config" />
-    <!-- <BarChartHoriz
-      :width="width"
-      :height="height"
-      :margin-top="marginTop"
-      :margin-right="marginRight"
-      :margin-bottom="marginBottom"
-      :margin-left="marginLeft"
-      :data="data"
-      :animation="true"
-    /> -->
+    <D3Chart v-bind="config" />
   </div>
 </template>
 
 <script setup>
-import {
-  Chart,
-  LineWithTooltip,
-  BarChartVertic,
-  BarChartHoriz,
-} from "./components";
+import D3Chart from "./components/d3Chart.vue";
 import config from "./components/config";
 </script>
 

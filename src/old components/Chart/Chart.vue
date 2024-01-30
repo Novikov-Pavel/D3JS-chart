@@ -6,6 +6,7 @@
 <script setup>
 import * as d3 from "d3";
 import { onMounted } from "vue";
+import config from "../config";
 
 const props = defineProps({
   data: Array,
@@ -40,11 +41,11 @@ onMounted(() => {
   const legendMargin = 70;
   const svg = d3.select("svg");
 
-  const groupDateAmount = d3.group(props.data, (d) => d.dateAmount);
+  const groupDateAmount = d3.group(config.data, (d) => d.dateAmount);
   const dataAmount = groupDateAmount.get("amount");
 
-  const groupDateY2 = d3.group(props.data, (d) => d.dateY2);
-  const dataY2 = groupDateY2.get('Y2');
+  const groupDateY2 = d3.group(config.data, (d) => d.dateY2);
+  const dataY2 = groupDateY2.get("Y2");
 
   // 1. Позиционирование легенды
   const divChart = svg
