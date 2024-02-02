@@ -6,20 +6,21 @@
     :transform="`translate(0, ${transform})`"
   >
     <g
+      @click="notActive = !notActive"
       v-if="legendSpace"
       v-for="(rect, i) in groupDateAmount"
       :key="rect[i]"
       :fill="colorDataAmount(groupDateAmount[0])"
     >
       <rect
-        class="rectLegend"
+        :class="{ legend: true, rectLegend: notActive }"
         :x="marginLeft"
         :y="height - legendSpace / 2 + i * sizeLegend"
         :width="sizeLegend"
         :height="sizeLegend"
       />
       <text
-        class="labelLegend"
+        :class="{ legend: true, labelLegend: notActive }"
         :x="marginLeft + sizeLegend * 1.5"
         :y="height - legendSpace / 2 + i * sizeLegend"
         alignment-baseline="before-edge"
@@ -68,6 +69,17 @@ const props = defineProps({
   ariaFill: Boolean,
   markerSize: Number,
   transform: Number,
+  notActive: Object,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
 </script>
+<style>
+.rectLegend,
+.labelLegend {
+  fill: #b8c1d4;
+  transition: all 1s ease-in-out;
+}
+.legend:not(.rectLegend) {
+  transition: 1s;
+}
+</style>

@@ -4,10 +4,12 @@
   <Legend
     v-if="legendSpace"
     v-bind="props"
+    :notActive="notActive"
     :transform="-2 * height + marginTop"
   />
   <Line
     v-if="typeChart === 'Line'"
+    :class="{line: notActive}"
     @dblclick="dblclick"
     v-bind="props"
     :transform="-3 * height + marginTop"
@@ -27,7 +29,7 @@
 
 <script setup>
 import * as d3 from "d3";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { animationBars, brush, dblclick, x, y } from "./helpers";
 import { ScaleX, ScaleY } from "./Scales";
 import { Bar, Legend, LimitValues, Line } from ".";
@@ -68,6 +70,7 @@ const props = defineProps({
   scaleXName: String,
   scaleYName: String,
 });
+const notActive = ref(false);
 
 onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));
@@ -101,5 +104,8 @@ text {
   user-select: none;
   font-family: Microsoft YaHei;
   fill: #6e7079;
+}
+.line {
+  opacity: 0;
 }
 </style>

@@ -5,7 +5,6 @@
     :transform="`translate(${marginLeft}, ${transform})`"
   >
     <g :transform="`translate(${-marginLeft}, 0)`">
-      <g class="brush" />
       <path
         class="line1"
         fill="none"
@@ -20,6 +19,7 @@
         fill-opacity="0.2"
         :d="ariaChart1(newDateAmount)"
       />
+      <g class="brush" />
       <g
         v-for="(dataSet, i) in newDateAmount"
         :key="x(dataSet[scaleXName])"
