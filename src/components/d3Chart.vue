@@ -1,5 +1,10 @@
 <template>
-  <svg :width="width" :height="height" :view-box="`0 0 ${width} ${height}`">
+  <svg
+    :width="width"
+    :height="height"
+    :view-box="`0 0 ${width} ${height}`"
+    :transform="`translate(0, ${marginTop})`"
+  >
     <g
       class="xAxis"
       :transform="`translate(0,${height - marginBottom - legendSpace})`"
@@ -42,7 +47,7 @@
   <svg
     @dblclick="dblclick"
     :width="width - marginLeft - marginRight"
-    :height="height - marginTop - marginBottom - legendSpace"
+    :height="height - marginBottom - legendSpace"
     :transform="`translate(${marginLeft}, ${-height - marginTop})`"
   >
     <g
@@ -173,7 +178,6 @@
         </marker>
       </defs>
       <line
-        :transform="`translate(0, ${-marginTop})`"
         v-for="limit in limitValue"
         :key="limit"
         :x1="0"
@@ -264,8 +268,17 @@ onMounted(() => {
 });
 </script>
 <style>
+@font-face {
+  font-family: Microsoft YaHei;
+  src: url("../../public/fonts/microsoft-yahei.ttf");
+}
 .rects,
 circle {
   cursor: pointer;
+}
+text {
+  user-select: none;
+  font-family: Microsoft YaHei;
+  fill: #6E7079;
 }
 </style>

@@ -133,8 +133,8 @@ export default {
   sizeLegend: 20,
   ariaFill: true,
   markerSize: 12,
-  scaleX: () => d3.scaleBand(),
+  scaleX: () => d3.scaleTime(),
   scaleY: () => d3.scaleLinear(),
   schemeCategory: d3.schemeCategory10,
-  typeChart: "Bar",
+  typeChart: "Line",
 };
