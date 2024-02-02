@@ -9,14 +9,14 @@ export function animationBars() {
       .join("rect")
       .transition()
       .duration(1500)
-      .attr("y", (d) => y(d.amount))
-      .attr("height", (d) => y(0) - y(d.amount));
+      .attr("y", (d) => y(d[config.scaleYName]))
+      .attr("height", (d) => y(0) - y(d[config.scaleYName]));
 
     Bar.selectAll("text")
       .data(newDateAmount.value)
       .join("text")
       .transition()
       .duration(1500)
-      .attr("y", (d) => y(d.amount) - x.bandwidth() / 10);
+      .attr("y", (d) => y(d[config.scaleYName]) - x.bandwidth() / 10);
   }
 }

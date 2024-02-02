@@ -135,6 +135,8 @@ export default {
   markerSize: 12,
   scaleX: () => d3.scaleTime(),
   scaleY: () => d3.scaleLinear(),
+  scaleXName: 'date',
+  scaleYName: 'amount',
   schemeCategory: d3.schemeCategory10,
   typeChart: "Line",
 };

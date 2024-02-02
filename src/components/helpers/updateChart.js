@@ -28,7 +28,6 @@ export function updateChart(event) {
 
     if (config.typeChart === "Bar") {
       const dRangeX = extent.map(scaleBandInvert(x));
-      console.log("dRangeXBar", dRangeX);
       const indexMinMax = dRangeX.map((el) => x.domain().indexOf(el));
       const arrDates = x
         .domain()
@@ -40,12 +39,12 @@ export function updateChart(event) {
             : indexMinMax[1]
         );
       const filteredData = newDateAmount.value.filter((item) =>
-        arrDates.includes(item.date)
+        arrDates.includes(item[config.scaleXName])
       );
 
-      groupDateAmount.value.set("amount", filteredData);
+      groupDateAmount.value.set(config.scaleYName, filteredData);
       newDateAmount.value = groupDateAmount.value
-        .get("amount")
+        .get(config.scaleYName)
         .map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs);
       x.domain(arrDates);
     }

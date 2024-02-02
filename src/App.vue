@@ -10,12 +10,17 @@ import config from "./components/config";
 </script>
 
 <style lang="scss">
-body {
+* {
   margin: 0;
+  padding: 0;
 }
-.charts {
-  display: flex;
-  flex-direction: column;
-  gap: 100px;
+svg {
+  display: block;
 }
+
+// .charts {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 100px;
+// }
 </style>
