@@ -23,19 +23,14 @@
     v-bind="props"
     :transform="-3 * height - marginBottom"
   />
-  <Tooltips v-bind="props" />
 </template>
 
 <script setup>
 import * as d3 from "d3";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { animationBars, brush, dblclick, x, y } from "./helpers";
-import ScaleX from "./Scales/ScaleX.vue";
-import ScaleY from "./Scales/ScaleY.vue";
-import Legend from "./Scales/Legend.vue";
-import LimitValues from "./LimitValues.vue";
-import Line from "./Line.vue";
-import Bar from "./Bar.vue";
+import { ScaleX, ScaleY } from "./Scales";
+import { Bar, Legend, LimitValues, Line } from ".";
 
 const props = defineProps({
   data: Array,

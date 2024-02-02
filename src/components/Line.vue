@@ -84,6 +84,7 @@ import {
   textAnchor,
   valuePositionTranslate,
 } from "./helpers";
+import { ref } from "vue";
 
 const props = defineProps({
   data: Array,
@@ -123,4 +124,6 @@ const props = defineProps({
   scaleYName: String,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
+const tooltip = ref(null);
+
 </script>

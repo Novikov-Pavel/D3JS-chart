@@ -53,7 +53,6 @@
 
 <script setup>
 import * as d3 from "d3";
-
 import { groupDateAmount, newDateAmount, x, y } from "./helpers";
 import { ref } from "vue";
 
@@ -94,7 +93,7 @@ const props = defineProps({
   scaleXName: String,
   scaleYName: String,
 });
-const tooltip = ref(null);
 
+const tooltip = ref(null);
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
 </script>
