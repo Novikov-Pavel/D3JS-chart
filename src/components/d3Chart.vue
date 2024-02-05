@@ -7,6 +7,15 @@
     @isActive="(notActive) => $emit('isActive', notActive)"
     :style="{ top: legend.legendSpace }"
   />
+  <LimitValues
+    v-if="limitValue"
+    :width="width"
+    :height="height"
+    :margin="margin"
+    :markerSize="markerSize"
+    :limitValue="limitValue"
+    :legend="legend"
+  />
   <Line
     v-if="typeChart === 'Line'"
     :class="['chart', { notActive: notActive }]"
@@ -20,15 +29,6 @@
     @dblclick="dblclick"
     v-bind="props"
     :style="{ top: margin.top }"
-  />
-  <LimitValues
-    v-if="limitValue"
-    :width="width"
-    :height="height"
-    :margin="margin"
-    :markerSize="markerSize"
-    :limitValue="limitValue"
-    :legend="legend"
   />
   <Mean
     v-if="mean"

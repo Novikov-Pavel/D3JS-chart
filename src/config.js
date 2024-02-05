@@ -134,7 +134,7 @@ export default {
     rotateYText: 0,
     rotateValues: 0,
   },
-  limitValue: [0, 0],
+  limitValue: [1, 2],
   legend: {
     legendSpace: 40,
     legendSize: 20,
