@@ -1,4 +1,4 @@
-import config from "../config";
+import config from "../../config";
 import * as d3 from "d3";
 
 export function animationBars() {

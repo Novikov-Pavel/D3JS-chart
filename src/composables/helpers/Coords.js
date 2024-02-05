@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import * as d3 from "d3";
-import config from "../config";
+import config from "../../config";
 
 const parseTime = d3.timeParse("%d-%b-%y");
 const groupDateAmount = ref(d3.group(config.data, (d) => d.dateAmount));

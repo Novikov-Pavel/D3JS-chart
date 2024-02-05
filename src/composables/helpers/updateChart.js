@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { animationBars, brush, groupDateAmount, newDateAmount, x } from "./";
-import config from "../config";
+import config from "../../config";
 
 let idleTimeout;
 const idled = () => (idleTimeout = null);

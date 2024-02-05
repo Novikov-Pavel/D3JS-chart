@@ -1,5 +1,6 @@
 <template>
   <svg
+    :opacity="opacity ? 0 : 1"
     :width="width - marginLeft - marginRight"
     :height="height - marginBottom - legendSpace"
     :transform="`translate(${marginLeft}, ${transform})`"
@@ -72,7 +73,6 @@
 
 <script setup>
 import * as d3 from "d3";
-
 import {
   groupDateAmount,
   newDateAmount,
@@ -83,7 +83,7 @@ import {
   parseTime,
   textAnchor,
   valuePositionTranslate,
-} from "./helpers";
+} from "../../../composables/helpers";
 import { ref } from "vue";
 
 const props = defineProps({
@@ -122,8 +122,8 @@ const props = defineProps({
   transform: Number,
   scaleXName: String,
   scaleYName: String,
+  opacity: Boolean,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
 const tooltip = ref(null);
-
 </script>

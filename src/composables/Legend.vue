@@ -6,7 +6,7 @@
     :transform="`translate(0, ${transform})`"
   >
     <g
-      @click="notActive = !notActive"
+      @click="setActive"
       v-if="legendSpace"
       v-for="(rect, i) in groupDateAmount"
       :key="rect[i]"
@@ -34,6 +34,7 @@
 <script setup>
 import * as d3 from "d3";
 import { groupDateAmount } from "./helpers";
+import { ref } from "vue";
 
 const props = defineProps({
   data: Array,
@@ -72,14 +73,24 @@ const props = defineProps({
   notActive: Object,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
+const notActive = ref(false);
+
+const emit = defineEmits(["isActive"]);
+const setActive = () => {
+  notActive.value = !notActive.value;
+  emit("isActive", notActive);
+};
 </script>
-<style>
+<style scoped lang="scss">
 .rectLegend,
 .labelLegend {
   fill: #b8c1d4;
   transition: all 1s ease-in-out;
 }
-.legend:not(.rectLegend) {
-  transition: 1s;
+.legend {
+  cursor: pointer;
+  &:not(.rectLegend) {
+    transition: 1s;
+  }
 }
 </style>

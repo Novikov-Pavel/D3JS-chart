@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { brush, groupDateAmount, x, parseTime, newDateAmount } from "./";
-import config from "../config";
+import config from "../../config";
 
 export function dblclick() {
   groupDateAmount.value = d3.group(config.data, (d) => d.dateAmount);

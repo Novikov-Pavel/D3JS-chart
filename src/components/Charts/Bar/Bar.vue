@@ -1,5 +1,6 @@
 <template>
   <svg
+    :opacity="opacity ? 0 : 1"
     :width="width - marginLeft - marginRight"
     :height="height - marginBottom - legendSpace"
     :transform="`translate(${marginLeft}, ${transform})`"
@@ -53,7 +54,12 @@
 
 <script setup>
 import * as d3 from "d3";
-import { groupDateAmount, newDateAmount, x, y } from "./helpers";
+import {
+  groupDateAmount,
+  newDateAmount,
+  x,
+  y,
+} from "../../../composables/helpers";
 import { ref } from "vue";
 
 const props = defineProps({
@@ -92,6 +98,7 @@ const props = defineProps({
   transform: Number,
   scaleXName: String,
   scaleYName: String,
+  opacity: Boolean,
 });
 
 const tooltip = ref(null);

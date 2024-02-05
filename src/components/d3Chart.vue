@@ -4,18 +4,19 @@
   <Legend
     v-if="legendSpace"
     v-bind="props"
-    :notActive="notActive"
+    @isActive="(notActive) => $emit('isActive', notActive)"
     :transform="-2 * height + marginTop"
   />
   <Line
     v-if="typeChart === 'Line'"
-    :class="{line: notActive}"
+    :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
     :transform="-3 * height + marginTop"
   />
   <Bar
     v-if="typeChart === 'Bar'"
+    :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
     :transform="-3 * height + marginTop"
@@ -29,10 +30,11 @@
 
 <script setup>
 import * as d3 from "d3";
-import { onMounted, ref } from "vue";
-import { animationBars, brush, dblclick, x, y } from "./helpers";
+import { onMounted } from "vue";
+import { animationBars, brush, dblclick, x, y } from "../composables/helpers";
 import { ScaleX, ScaleY } from "./Scales";
-import { Bar, Legend, LimitValues, Line } from ".";
+import { Bar, Line } from "./Charts";
+import { Legend, LimitValues } from "../composables";
 
 const props = defineProps({
   data: Array,
@@ -69,8 +71,9 @@ const props = defineProps({
   markerSize: Number,
   scaleXName: String,
   scaleYName: String,
+  notActive: Object,
 });
-const notActive = ref(false);
+const emit = defineEmits("isActive");
 
 onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));
@@ -105,7 +108,11 @@ text {
   font-family: Microsoft YaHei;
   fill: #6e7079;
 }
-.line {
+.notActive {
   opacity: 0;
+  transition: all 1s ease-in-out;
+}
+.chart:not(.notActive) {
+  transition: 1s;
 }
 </style>
