@@ -1,5 +1,13 @@
 import * as d3 from "d3";
 
+const colorScheme1 = [
+  'rgb(0, 32, 74)',
+  'rgb(0, 87, 146)',
+  'rgb(0, 187, 240)',
+  'rgb(238, 108, 77)',
+  'rgb(218, 175, 79)',
+]
+
 export default {
   width: 800,
   height: 500,
@@ -147,7 +155,7 @@ export default {
     scaleXName: "date",
     scaleYName: "amount",
   },
-  schemeCategory: d3.schemeCategory10,
+  schemeCategory: colorScheme1,
   typeChart: "Bar",
   mean: false,
 };
