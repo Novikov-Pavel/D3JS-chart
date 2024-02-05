@@ -3,7 +3,6 @@
     :width="width"
     :height="height"
     :view-box="`0 0 ${width} ${height}`"
-    :transform="`translate(0, ${transform})`"
   >
     <g
       @click="setActive"
@@ -69,7 +68,7 @@ const props = defineProps({
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  notActive: Object,
+  notActive: Boolean,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
 const notActive = ref(false);

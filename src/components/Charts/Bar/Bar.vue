@@ -3,7 +3,7 @@
     :opacity="opacity ? 0 : 1"
     :width="width - marginLeft - marginRight"
     :height="height - marginBottom - legendSpace"
-    :transform="`translate(${marginLeft}, ${transform})`"
+    :transform="`translate(${marginLeft}, 0)`"
   >
     <g
       :transform="`translate(${-marginLeft}, 0)`"
@@ -16,6 +16,8 @@
         :key="x(dataSet[scaleXName])"
         @pointerover="tooltip = i"
         @pointerleave="tooltip = null"
+        @click="onClick(i)"
+        ref="opacityRect"
       >
         <rect
           :x="x(dataSet[scaleXName])"
@@ -102,4 +104,11 @@ const props = defineProps({
 
 const tooltip = ref(null);
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
+
+const opacityRect = ref([]);
+const onClick = (i) => {
+  opacityRect.value.map((e, idx) =>
+    idx !== i ? (e.style.opacity = 0.3) : (e.style.opacity = 1)
+  );
+};
 </script>

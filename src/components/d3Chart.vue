@@ -71,7 +71,7 @@ const props = defineProps({
   markerSize: Number,
   scaleXName: String,
   scaleYName: String,
-  notActive: Object,
+  notActive: Boolean,
 });
 const emit = defineEmits("isActive");
 const minLimitValue = Math.min(...props.limitValue);
