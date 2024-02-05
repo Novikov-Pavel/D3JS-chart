@@ -134,7 +134,7 @@ export default {
     rotateYText: 0,
     rotateValues: 0,
   },
-  limitValue: [10, 20],
+  limitValue: [0, 0],
   legend: {
     legendSpace: 40,
     legendSize: 20,
@@ -149,4 +149,5 @@ export default {
   },
   schemeCategory: d3.schemeCategory10,
   typeChart: "Bar",
+  mean: false,
 };

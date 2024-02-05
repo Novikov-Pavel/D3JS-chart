@@ -1,11 +1,12 @@
 export {
+  ariaChart1,
   groupDateAmount,
+  line1,
+  mean,
   newDateAmount,
+  parseTime, 
   x,
   y,
-  ariaChart1,
-  line1,
-  parseTime, 
 } from "../helpers/Coords";
 export { animationBars } from "../helpers/animationBars";
 export { brush } from "../helpers/brush";

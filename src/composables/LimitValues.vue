@@ -1,8 +1,8 @@
 <template>
   <svg
     :width="width - margin.left - margin.right"
-    :height="60"
-    :transform="`translate(${margin.left}, 0)`"
+    :height="height - margin.bottom - legend.legendSpace"
+    :transform="`translate(${margin.left}, ${margin.top})`"
   >
     <g stroke="black">
       <defs>
@@ -25,7 +25,6 @@
         </marker>
       </defs>
       <line
-        :transform="`translate(0, ${-430 + margin.top + margin.bottom})`"
         v-for="limit in limitValue"
         :key="limit"
         :x1="0"
@@ -44,22 +43,11 @@
 import { y } from "./helpers";
 
 const props = defineProps({
-  data: Array,
   width: Number,
   height: Number,
   margin: Object,
-  animation: Boolean,
-  valuePosition: String,
-  rotateFormat: Object,
-  fontFormat: Object,
   limitValue: Array,
-  labelY: String,
-  legend: Object,
-  schemeCategory: Object,
-  typeChart: String,
-  ariaFill: Boolean,
   markerSize: Number,
+  legend: Object,
 });
 </script>
-<style scoped lang="scss">
-</style>

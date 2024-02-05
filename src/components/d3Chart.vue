@@ -23,8 +23,20 @@
   />
   <LimitValues
     v-if="limitValue"
-    v-bind="props"
-    :style="{ top: y(minLimitValue) }"
+    :width="width"
+    :height="height"
+    :margin="margin"
+    :markerSize="markerSize"
+    :limitValue="limitValue"
+    :legend="legend"
+  />
+  <Mean
+    v-if="mean"
+    :width="width"
+    :height="height"
+    :margin="margin"
+    :markerSize="markerSize"
+    :legend="legend"
   />
 </template>
 
@@ -34,7 +46,7 @@ import { onMounted } from "vue";
 import { animationBars, brush, dblclick, x, y } from "../composables/helpers";
 import { scaleX, scaleY } from "./Scales";
 import { Bar, Line } from "./Charts";
-import { Legend, LimitValues } from "../composables";
+import { Legend, LimitValues, Mean } from "../composables";
 
 const props = defineProps({
   data: Array,
@@ -54,6 +66,7 @@ const props = defineProps({
   markerSize: Number,
   scale: Object,
   notActive: Boolean,
+  mean: Boolean,
 });
 const emit = defineEmits("isActive");
 const minLimitValue = Math.min(...props.limitValue);

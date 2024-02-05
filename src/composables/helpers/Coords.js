@@ -7,16 +7,24 @@ const parseTime = d3.timeParse("%d.%m.%Y");
 
 const groupDateAmount = ref(d3.group(config.data, (d) => d.dateAmount));
 
-const dateAmount = computed(() => groupDateAmount.value.get(config.scale.scaleYName));
+const dateAmount = computed(() =>
+  groupDateAmount.value.get(config.scale.scaleYName)
+);
 const newDateAmount = ref(
   dateAmount.value.map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs)
 );
 
 const domainBarX = newDateAmount.value.map((d) => d[config.scale.scaleXName]);
+
 const domainLineX = d3.extent(newDateAmount.value, (d) =>
-  parseTime(d[config.scale.scaleXName])
+parseTime(d[config.scale.scaleXName])
 );
-const domainY = [0, d3.max(newDateAmount.value, (d) => d[config.scale.scaleYName])];
+const domainY = [
+  0,
+  d3.max(newDateAmount.value, (d) => d[config.scale.scaleYName]),
+];
+
+const mean = d3.mean(domainY);
 
 const chooseChart = (domain) => {
   const domains = {
@@ -26,15 +34,15 @@ const chooseChart = (domain) => {
   return domains[domain];
 };
 
-const x = config
-  .scale.scaleX()
+const x = config.scale
+  .scaleX()
   .domain(chooseChart(config.typeChart))
   .range([config.margin.left, config.width - config.margin.right]);
 
 if (config.typeChart === "Bar") x.padding(0.3);
 
-const y = config
-  .scale.scaleY()
+const y = config.scale
+  .scaleY()
   .domain(domainY)
   .range([
     config.height - config.margin.bottom - config.legend.legendSpace,
@@ -57,6 +65,7 @@ export {
   domainLineX,
   groupDateAmount,
   line1,
+  mean,
   newDateAmount,
   parseTime,
   x,
