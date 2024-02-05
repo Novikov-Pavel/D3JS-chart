@@ -5,8 +5,8 @@ import { updateChart } from "./";
 const brush = d3
   .brushX()
   .extent([
-    [0, config.marginTop],
-    [config.width, config.height - config.marginBottom],
+    [0, config.margin.top],
+    [config.width, config.height - config.margin.bottom],
   ])
   .on("end", updateChart);
 

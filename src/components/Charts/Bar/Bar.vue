@@ -1,47 +1,51 @@
 <template>
   <svg
     :opacity="opacity ? 0 : 1"
-    :width="width - marginLeft - marginRight"
-    :height="height - marginBottom - legendSpace"
-    :transform="`translate(${marginLeft}, 0)`"
+    :width="width - margin.left - margin.right"
+    :height="height - margin.bottom - legend.legendSpace"
+    :transform="`translate(${margin.left}, 0)`"
   >
     <g
-      :transform="`translate(${-marginLeft}, 0)`"
+      :transform="`translate(${-margin.left}, 0)`"
       class="rects"
       :fill="colorDataAmount(groupDateAmount[0])"
     >
       <g class="brush" />
       <g
         v-for="(dataSet, i) in newDateAmount"
-        :key="x(dataSet[scaleXName])"
+        :key="x(dataSet[scale.scaleXName])"
         @pointerover="tooltip = i"
         @pointerleave="tooltip = null"
-        @click="onClick(i)"
+        @pointerdown="onClick(i)"
         ref="opacityRect"
       >
         <rect
-          :x="x(dataSet[scaleXName])"
-          :y="animation ? y(0) : y(dataSet[scaleYName])"
-          :height="animation ? 0 : y(0) - y(dataSet[scaleYName])"
+          :x="x(dataSet[scale.scaleXName])"
+          :y="animation ? y(0) : y(dataSet[scale.scaleYName])"
+          :height="animation ? 0 : y(0) - y(dataSet[scale.scaleYName])"
           :width="x.bandwidth()"
         />
         <text
           text-anchor="middle"
-          :x="x(dataSet[scaleXName]) + x.bandwidth() / 2"
-          :y="animation ? y(0) : y(dataSet[scaleYName]) - x.bandwidth() / 10"
-          :font-weight="fontWeightValues ? 'bold' : 'normal'"
-          :font-style="fontItalicValues ? 'italic' : 'normal'"
-          :font-size="fontSizeValue"
+          :x="x(dataSet[scale.scaleXName]) + x.bandwidth() / 2"
+          :y="
+            animation
+              ? y(0)
+              : y(dataSet[scale.scaleYName]) - x.bandwidth() / 10
+          "
+          :font-weight="fontFormat.fontWeightValues ? 'bold' : 'normal'"
+          :font-style="fontFormat.fontItalicValues ? 'italic' : 'normal'"
+          :font-size="fontFormat.fontSizeValue"
         >
-          {{ dataSet[scaleYName] }}
+          {{ dataSet[scale.scaleYName] }}
         </text>
         <text
-          :x="x(dataSet[scaleXName])"
-          :y="y(dataSet[scaleYName])"
+          :x="x(dataSet[scale.scaleXName])"
+          :y="y(dataSet[scale.scaleYName])"
           v-if="tooltip === i"
         >
           <tspan
-            :x="x(dataSet[scaleXName])"
+            :x="x(dataSet[scale.scaleXName])"
             :dy="-20"
             v-for="itemTooltip in dataSet"
             :key="itemTooltip"
@@ -68,37 +72,19 @@ const props = defineProps({
   data: Array,
   width: Number,
   height: Number,
-  marginTop: Number,
-  marginRight: Number,
-  marginBottom: Number,
-  marginLeft: Number,
+  margin: Object,
   animation: Boolean,
   valuePosition: String,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  rotateXText: Number,
-  rotateYText: Number,
-  rotateValues: Number,
-  fontWeightX: Boolean,
-  fontWeightY: Boolean,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  fontItalicX: Boolean,
-  fontSizeX: Number,
-  fontItalicY: Boolean,
-  fontSizeY: Number,
+  rotateFormat: Object,
+  fontFormat: Object,
   limitValue: Array,
   labelY: String,
-  legendSpace: Number,
-  sizeLegend: Number,
+  legend: Object,
   schemeCategory: Object,
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  scaleXName: String,
-  scaleYName: String,
+  scale: Object,
   opacity: Boolean,
 });
 

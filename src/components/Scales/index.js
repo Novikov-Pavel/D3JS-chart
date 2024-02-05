@@ -1,2 +1,2 @@
-export { default as ScaleX } from "./ScaleX.vue";
-export { default as ScaleY} from "./ScaleY.vue";
+export { default as scaleX } from "./ScaleX.vue";
+export { default as scaleY } from "./ScaleY.vue";

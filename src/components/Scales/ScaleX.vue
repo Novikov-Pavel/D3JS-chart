@@ -3,13 +3,13 @@
     :width="width"
     :height="height"
     :view-box="`0 0 ${width} ${height}`"
-    :transform="`translate(0, ${marginTop})`"
+    :transform="`translate(0, ${margin.top})`"
   >
     <g
       class="xAxis"
-      :transform="`translate(0,${height - marginBottom - legendSpace})`"
-      :font-weight="fontWeightX ? 'bold' : 'normal'"
-      :font-style="fontItalicX ? 'italic' : 'normal'"
+      :transform="`translate(0,${height - margin.bottom - legend.legendSpace})`"
+      :font-weight="fontFormat.fontWeightX ? 'bold' : 'normal'"
+      :font-style="fontFormat.fontItalicX ? 'italic' : 'normal'"
     />
   </svg>
 </template>
@@ -19,31 +19,14 @@ const props = defineProps({
   data: Array,
   width: Number,
   height: Number,
-  marginTop: Number,
-  marginRight: Number,
-  marginBottom: Number,
-  marginLeft: Number,
+  margin: Object,
   animation: Boolean,
   valuePosition: String,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  rotateXText: Number,
-  rotateYText: Number,
-  rotateValues: Number,
-  fontWeightX: Boolean,
-  fontWeightY: Boolean,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  fontItalicX: Boolean,
-  fontSizeX: Number,
-  fontItalicY: Boolean,
-  fontSizeY: Number,
+  rotateFormat: Object,
+  fontFormat: Object,
   limitValue: Array,
   labelY: String,
-  legendSpace: Number,
-  sizeLegend: Number,
+  legend: Object,
   schemeCategory: Object,
   typeChart: String,
   ariaFill: Boolean,

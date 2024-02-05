@@ -1,8 +1,8 @@
 <template>
   <svg
-    :width="width - marginLeft - marginRight"
+    :width="width - margin.left - margin.right"
     :height="60"
-    :transform="`translate(${marginLeft}, 0)`"
+    :transform="`translate(${margin.left}, 0)`"
   >
     <g stroke="black">
       <defs>
@@ -25,12 +25,12 @@
         </marker>
       </defs>
       <line
-        :transform="`translate(0, ${-430 + marginTop + marginBottom})`"
+        :transform="`translate(0, ${-430 + margin.top + margin.bottom})`"
         v-for="limit in limitValue"
         :key="limit"
         :x1="0"
         :y1="y(limit)"
-        :x2="width - marginRight - marginLeft - markerSize"
+        :x2="width - margin.right - margin.left - markerSize"
         :y2="y(limit)"
         stroke-dasharray="15 5"
         marker-start="url(#arrowStart)"
@@ -47,31 +47,14 @@ const props = defineProps({
   data: Array,
   width: Number,
   height: Number,
-  marginTop: Number,
-  marginRight: Number,
-  marginBottom: Number,
-  marginLeft: Number,
+  margin: Object,
   animation: Boolean,
   valuePosition: String,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  rotateXText: Number,
-  rotateYText: Number,
-  rotateValues: Number,
-  fontWeightX: Boolean,
-  fontWeightY: Boolean,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  fontItalicX: Boolean,
-  fontSizeX: Number,
-  fontItalicY: Boolean,
-  fontSizeY: Number,
+  rotateFormat: Object,
+  fontFormat: Object,
   limitValue: Array,
   labelY: String,
-  legendSpace: Number,
-  sizeLegend: Number,
+  legend: Object,
   schemeCategory: Object,
   typeChart: String,
   ariaFill: Boolean,

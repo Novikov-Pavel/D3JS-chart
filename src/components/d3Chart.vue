@@ -1,27 +1,27 @@
 <template>
-  <ScaleX v-bind="props" />
-  <ScaleY v-bind="props" />
+  <scaleX v-bind="props" />
+  <scaleY v-bind="props" />
   <Legend
-    v-if="legendSpace"
+    v-if="legend.legendSpace"
     v-bind="props"
     @isActive="(notActive) => $emit('isActive', notActive)"
-    :style="{ top: legendSpace }"
+    :style="{ top: legend.legendSpace }"
   />
   <Line
     v-if="typeChart === 'Line'"
     :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
-    :style="{ top: marginTop }"
+    :style="{ top: margin.top }"
   />
   <Bar
     v-if="typeChart === 'Bar'"
     :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
-    :style="{ top: marginTop }"
+    :style="{ top: margin.top }"
   />
-  <LimitValues 
+  <LimitValues
     v-if="limitValue"
     v-bind="props"
     :style="{ top: y(minLimitValue) }"
@@ -32,7 +32,7 @@
 import * as d3 from "d3";
 import { onMounted } from "vue";
 import { animationBars, brush, dblclick, x, y } from "../composables/helpers";
-import { ScaleX, ScaleY } from "./Scales";
+import { scaleX, scaleY } from "./Scales";
 import { Bar, Line } from "./Charts";
 import { Legend, LimitValues } from "../composables";
 
@@ -40,37 +40,19 @@ const props = defineProps({
   data: Array,
   width: Number,
   height: Number,
-  marginTop: Number,
-  marginRight: Number,
-  marginBottom: Number,
-  marginLeft: Number,
+  margin: Object,
   animation: Boolean,
   valuePosition: String,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  rotateXText: Number,
-  rotateYText: Number,
-  rotateValues: Number,
-  fontWeightX: Boolean,
-  fontWeightY: Boolean,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  fontItalicX: Boolean,
-  fontSizeX: Number,
-  fontItalicY: Boolean,
-  fontSizeY: Number,
+  rotateFormat: Object,
+  fontFormat: Object,
   limitValue: Array,
   labelY: String,
-  legendSpace: Number,
-  sizeLegend: Number,
+  legend: Object,
   schemeCategory: Object,
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  scaleXName: String,
-  scaleYName: String,
+  scale: Object,
   notActive: Boolean,
 });
 const emit = defineEmits("isActive");
@@ -81,15 +63,15 @@ onMounted(() => {
 
   axisX
     .selectAll(".tick text")
-    .attr("transform", `rotate(${props.rotateXText})`)
-    .attr("font-size", props.fontSizeX);
+    .attr("transform", `rotate(${props.rotateFormat.rotateXText})`)
+    .attr("font-size", props.fontFormat.fontSizeX);
 
   const yAxis = d3.select(".yAxis").call(d3.axisLeft(y));
 
   yAxis
     .selectAll(".tick text")
-    .attr("transform", `rotate(${props.rotateYText})`)
-    .attr("font-size", props.fontSizeY);
+    .attr("transform", `rotate(${props.rotateFormat.rotateYText})`)
+    .attr("font-size", props.fontFormat.fontSizeY);
 
   animationBars();
   d3.select(".brush").call(brush);

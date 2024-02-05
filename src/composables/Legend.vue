@@ -1,27 +1,23 @@
 <template>
-  <svg
-    :width="width"
-    :height="height"
-    :view-box="`0 0 ${width} ${height}`"
-  >
+  <svg :width="width" :height="height" :view-box="`0 0 ${width} ${height}`">
     <g
       @click="setActive"
-      v-if="legendSpace"
+      v-if="legend.legendSpace"
       v-for="(rect, i) in groupDateAmount"
       :key="rect[i]"
       :fill="colorDataAmount(groupDateAmount[0])"
     >
       <rect
         :class="{ legend: true, rectLegend: notActive }"
-        :x="marginLeft"
-        :y="height - legendSpace / 2 + i * sizeLegend"
-        :width="sizeLegend"
-        :height="sizeLegend"
+        :x="margin.left"
+        :y="height - legend.legendSpace / 2 + i * legend.legendSize"
+        :width="legend.legendSize"
+        :height="legend.legendSize"
       />
       <text
         :class="{ legend: true, labelLegend: notActive }"
-        :x="marginLeft + sizeLegend * 1.5"
-        :y="height - legendSpace / 2 + i * sizeLegend"
+        :x="margin.left + legend.legendSize * 1.5"
+        :y="height - legend.legendSpace / 2 + i * legend.legendSize"
         alignment-baseline="before-edge"
       >
         {{ rect[i] }}
@@ -39,31 +35,14 @@ const props = defineProps({
   data: Array,
   width: Number,
   height: Number,
-  marginTop: Number,
-  marginRight: Number,
-  marginBottom: Number,
-  marginLeft: Number,
+  margin: Object,
   animation: Boolean,
   valuePosition: String,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  rotateXText: Number,
-  rotateYText: Number,
-  rotateValues: Number,
-  fontWeightX: Boolean,
-  fontWeightY: Boolean,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  fontItalicX: Boolean,
-  fontSizeX: Number,
-  fontItalicY: Boolean,
-  fontSizeY: Number,
+  rotateFormat: Object,
+  fontFormat: Object,
   limitValue: Array,
   labelY: String,
-  legendSpace: Number,
-  sizeLegend: Number,
+  legend: Object,
   schemeCategory: Object,
   typeChart: String,
   ariaFill: Boolean,

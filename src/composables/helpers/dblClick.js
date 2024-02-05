@@ -5,16 +5,16 @@ import config from "../../config";
 export function dblclick() {
   groupDateAmount.value = d3.group(config.data, (d) => d.dateAmount);
   newDateAmount.value = groupDateAmount.value
-    .get(config.scaleYName)
+    .get(config.scale.scaleYName)
     .map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs);
 
   if (config.typeChart === "Line") {
     x.domain(
-      d3.extent(newDateAmount.value, (d) => parseTime(d[config.scaleXName]))
+      d3.extent(newDateAmount.value, (d) => parseTime(d[config.scale.scaleXName]))
     );
   }
   if (config.typeChart === "Bar") {
-    x.domain(newDateAmount.value.map((d) => d[config.scaleXName]));
+    x.domain(newDateAmount.value.map((d) => d[config.scale.scaleXName]));
   }
 
   d3.select(".xAxis").call(d3.axisBottom(x));

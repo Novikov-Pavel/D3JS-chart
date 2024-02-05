@@ -39,12 +39,12 @@ export function updateChart(event) {
             : indexMinMax[1]
         );
       const filteredData = newDateAmount.value.filter((item) =>
-        arrDates.includes(item[config.scaleXName])
+        arrDates.includes(item[config.scale.scaleXName])
       );
 
-      groupDateAmount.value.set(config.scaleYName, filteredData);
+      groupDateAmount.value.set(config.scale.scaleYName, filteredData);
       newDateAmount.value = groupDateAmount.value
-        .get(config.scaleYName)
+        .get(config.scale.scaleYName)
         .map(({ y2, dateAmount, dateY2, ...keepAttrs }) => keepAttrs);
       x.domain(arrDates);
     }

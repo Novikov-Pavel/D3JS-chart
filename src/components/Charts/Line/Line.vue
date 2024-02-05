@@ -1,11 +1,11 @@
 <template>
   <svg
     :opacity="opacity ? 0 : 1"
-    :width="width - marginLeft - marginRight"
-    :height="height - marginBottom - legendSpace"
-    :transform="`translate(${marginLeft}, 0)`"
+    :width="width - margin.left - margin.right"
+    :height="height - margin.bottom - legend.legendSpace"
+    :transform="`translate(${margin.left}, 0)`"
   >
-    <g :transform="`translate(${-marginLeft}, 0)`">
+    <g :transform="`translate(${-margin.left}, 0)`">
       <path
         class="line1"
         fill="none"
@@ -23,7 +23,7 @@
       <g class="brush" />
       <g
         v-for="(dataSet, i) in newDateAmount"
-        :key="x(dataSet[scaleXName])"
+        :key="x(dataSet[scale.scaleXName])"
         @pointerover="tooltip = i"
         @pointerleave="tooltip = null"
       >
@@ -31,34 +31,34 @@
           r="3"
           fill="white"
           :stroke="colorDataAmount(groupDateAmount[0])"
-          :cx="x(parseTime(dataSet[scaleXName]))"
-          :cy="y(dataSet[scaleYName])"
+          :cx="x(parseTime(dataSet[scale.scaleXName]))"
+          :cy="y(dataSet[scale.scaleYName])"
         />
         <text
-          :x="x(parseTime(dataSet[scaleXName]))"
-          :y="y(dataSet[scaleYName])"
+          :x="x(parseTime(dataSet[scale.scaleXName]))"
+          :y="y(dataSet[scale.scaleYName])"
           :text-anchor="textAnchor(props.valuePosition) || 'middle'"
           dominant-baseline="middle"
-          :font-weight="fontWeightValues ? 'bold' : 'normal'"
-          :font-style="fontItalicValues ? 'italic' : 'normal'"
-          :font-size="fontSizeValue"
+          :font-weight="fontFormat.fontWeightValues ? 'bold' : 'normal'"
+          :font-style="fontFormat.fontItalicValues ? 'italic' : 'normal'"
+          :font-size="fontFormat.fontSizeValue"
           :transform="`
             translate(${valuePositionTranslate(props.valuePosition)}),
             rotate(
-              ${props.rotateValues},
-              ${x(parseTime(dataSet[scaleXName]))},
-              ${y(dataSet[scaleYName])})`"
+              ${props.rotateFormat.rotateValues},
+              ${x(parseTime(dataSet[scale.scaleXName]))},
+              ${y(dataSet[scale.scaleYName])})`"
         >
-          {{ dataSet[scaleYName] }}
+          {{ dataSet[scale.scaleYName] }}
         </text>
         <text
           v-if="tooltip === i"
-          :x="x(parseTime(dataSet[scaleXName]))"
-          :y="y(dataSet[scaleYName])"
+          :x="x(parseTime(dataSet[scale.scaleXName]))"
+          :y="y(dataSet[scale.scaleYName])"
           text-anchor="middle"
         >
           <tspan
-            :x="x(parseTime(dataSet[scaleXName]))"
+            :x="x(parseTime(dataSet[scale.scaleXName]))"
             :dy="-20"
             v-for="itemTooltip in dataSet"
             :key="itemTooltip"
@@ -90,37 +90,19 @@ const props = defineProps({
   data: Array,
   width: Number,
   height: Number,
-  marginTop: Number,
-  marginRight: Number,
-  marginBottom: Number,
-  marginLeft: Number,
+  margin: Object,
   animation: Boolean,
   valuePosition: String,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  rotateXText: Number,
-  rotateYText: Number,
-  rotateValues: Number,
-  fontWeightX: Boolean,
-  fontWeightY: Boolean,
-  fontWeightValues: Boolean,
-  fontItalicValues: Boolean,
-  fontSizeValue: Number,
-  fontItalicX: Boolean,
-  fontSizeX: Number,
-  fontItalicY: Boolean,
-  fontSizeY: Number,
+  rotateFormat: Object,
+  fontFormat: Object,
   limitValue: Array,
   labelY: String,
-  legendSpace: Number,
-  sizeLegend: Number,
+  legend: Object,
   schemeCategory: Object,
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  scaleXName: String,
-  scaleYName: String,
+  scale: Object,
   opacity: Boolean,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
