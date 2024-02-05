@@ -95,7 +95,6 @@ const props = defineProps({
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  transform: Number,
   scaleXName: String,
   scaleYName: String,
   opacity: Boolean,

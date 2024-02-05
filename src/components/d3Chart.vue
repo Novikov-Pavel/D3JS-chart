@@ -1,30 +1,30 @@
 <template>
   <ScaleX v-bind="props" />
-  <ScaleY v-bind="props" :transform="-height + marginTop" />
+  <ScaleY v-bind="props" />
   <Legend
     v-if="legendSpace"
     v-bind="props"
     @isActive="(notActive) => $emit('isActive', notActive)"
-    :transform="-2 * height + marginTop"
+    :style="{ top: legendSpace }"
   />
   <Line
     v-if="typeChart === 'Line'"
     :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
-    :transform="-3 * height + marginTop"
+    :style="{ top: marginTop }"
   />
   <Bar
     v-if="typeChart === 'Bar'"
     :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
-    :transform="-3 * height + marginTop"
+    :style="{ top: marginTop }"
   />
-  <LimitValues
+  <LimitValues 
     v-if="limitValue"
     v-bind="props"
-    :transform="-3 * height - marginBottom"
+    :style="{ top: y(minLimitValue) }"
   />
 </template>
 
@@ -74,6 +74,7 @@ const props = defineProps({
   notActive: Object,
 });
 const emit = defineEmits("isActive");
+const minLimitValue = Math.min(...props.limitValue);
 
 onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));

@@ -3,7 +3,7 @@
     :opacity="opacity ? 0 : 1"
     :width="width - marginLeft - marginRight"
     :height="height - marginBottom - legendSpace"
-    :transform="`translate(${marginLeft}, ${transform})`"
+    :transform="`translate(${marginLeft}, 0)`"
   >
     <g :transform="`translate(${-marginLeft}, 0)`">
       <path
@@ -119,7 +119,6 @@ const props = defineProps({
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  transform: Number,
   scaleXName: String,
   scaleYName: String,
   opacity: Boolean,

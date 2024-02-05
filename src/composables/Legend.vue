@@ -69,7 +69,6 @@ const props = defineProps({
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  transform: Number,
   notActive: Object,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);

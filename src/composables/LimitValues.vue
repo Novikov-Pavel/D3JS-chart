@@ -2,7 +2,7 @@
   <svg
     :width="width - marginLeft - marginRight"
     :height="60"
-    :transform="`translate(${marginLeft}, ${transform})`"
+    :transform="`translate(${marginLeft}, 0)`"
   >
     <g stroke="black">
       <defs>
@@ -76,8 +76,7 @@ const props = defineProps({
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  transform: Number,
 });
-
-
 </script>
+<style scoped lang="scss">
+</style>

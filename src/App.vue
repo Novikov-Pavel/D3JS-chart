@@ -26,6 +26,7 @@ const setOpacity = (par) => {
 }
 svg {
   display: block;
+  position: absolute;
 }
 
 // .charts {

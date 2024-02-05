@@ -3,7 +3,7 @@
     :width="width"
     :height="height"
     :view-box="`0 0 ${width} ${height}`"
-    :transform="`translate(0, ${transform})`"
+    :transform="`translate(0, ${marginTop})`"
   >
     <g
       class="yAxis"
@@ -53,6 +53,5 @@ const props = defineProps({
   typeChart: String,
   ariaFill: Boolean,
   markerSize: Number,
-  transform: Number,
 });
 </script>
