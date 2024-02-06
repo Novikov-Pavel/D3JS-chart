@@ -21,6 +21,7 @@
     :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
+    :regression="regression"
     :style="{ top: margin.top }"
   />
   <Bar
@@ -76,9 +77,10 @@ const props = defineProps({
   notActive: Boolean,
   mean: Boolean,
   median: Boolean,
+  regression: Object,
 });
+
 const emit = defineEmits("isActive");
-const minLimitValue = Math.min(...props.limitValue);
 
 onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));

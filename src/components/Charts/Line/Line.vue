@@ -14,8 +14,24 @@
         :d="line1(newDateAmount)"
       />
       <path
-        class="aria1"
+        v-if="regression.poly"
+        class="line1"
+        fill="none"
+        stroke-width="2"
+        :stroke="colorDataAmount(groupDateAmount[0])"
+        :d="lineGenerator(poly)"
+      />
+      <path
+        v-if="regression.logaritm"
+        class="line1"
+        fill="none"
+        stroke-width="2"
+        :stroke="colorDataAmount(groupDateAmount[0])"
+        :d="lineGenerator(logaritm)"
+      />
+      <path
         v-if="props.ariaFill"
+        class="aria1"
         :fill="colorDataAmount(groupDateAmount[0])"
         fill-opacity="0.2"
         :d="ariaChart1(newDateAmount)"
@@ -79,6 +95,9 @@ import {
   x,
   ariaChart1,
   line1,
+  lineGenerator,
+  logaritm,
+  poly,
   y,
   parseTime,
   textAnchor,
@@ -104,6 +123,7 @@ const props = defineProps({
   markerSize: Number,
   scale: Object,
   opacity: Boolean,
+  regression: Object,
 });
 const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
 const tooltip = ref(null);

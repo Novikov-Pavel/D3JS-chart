@@ -20,7 +20,7 @@ export default {
   data: [
     {
       date: "10.07.2022",
-      amount: 0,
+      amount: 1,
       y2: 0,
       test: "3rdObj1",
       dateAmount: "amount",
@@ -36,7 +36,7 @@ export default {
     },
     {
       date: "30.08.2022",
-      amount: 1,
+      amount: 3,
       y2: 3,
       test: "3rdObj3",
       dateAmount: "amount",
@@ -44,7 +44,7 @@ export default {
     },
     {
       date: "31.08.2022",
-      amount: 0,
+      amount: 4,
       y2: 1,
       test: "3rdObj4",
       dateAmount: "amount",
@@ -52,7 +52,7 @@ export default {
     },
     {
       date: "31.08.2022",
-      amount: 4,
+      amount: 5,
       y2: 4,
       test: "3rdObj5",
       dateAmount: "amount",
@@ -60,7 +60,7 @@ export default {
     },
     {
       date: "31.08.2022",
-      amount: 3,
+      amount: 6,
       y2: 1,
       test: "3rdObj6",
       dateAmount: "amount",
@@ -68,7 +68,7 @@ export default {
     },
     {
       date: "31.08.2022",
-      amount: 0,
+      amount: 7,
       y2: 2,
       test: "3rdObj7",
       dateAmount: "amount",
@@ -76,7 +76,7 @@ export default {
     },
     {
       date: "01.09.2022",
-      amount: 3,
+      amount: 8,
       y2: 1,
       test: "3rdObj8",
       dateAmount: "amount",
@@ -84,7 +84,7 @@ export default {
     },
     {
       date: "01.09.2022",
-      amount: 4,
+      amount: 9,
       y2: 1,
       test: "3rdObj8",
       dateAmount: "amount",
@@ -92,7 +92,7 @@ export default {
     },
     {
       date: "01.09.2022",
-      amount: 3,
+      amount: 10,
       y2: 1,
       test: "3rdObj8",
       dateAmount: "amount",
@@ -100,7 +100,7 @@ export default {
     },
     {
       date: "02.09.2022",
-      amount: 0,
+      amount: 11,
       y2: 3,
       test: "3rdObj11",
       dateAmount: "amount",
@@ -108,7 +108,7 @@ export default {
     },
     {
       date: "02.09.2022",
-      amount: 0,
+      amount: 12,
       y2: 3,
       test: "3rdObj11",
       dateAmount: "amount",
@@ -116,7 +116,7 @@ export default {
     },
     {
       date: "02.09.2022",
-      amount: 0,
+      amount: 13,
       y2: 3,
       test: "3rdObj11",
       dateAmount: "amount",
@@ -150,13 +150,17 @@ export default {
   ariaFill: true,
   markerSize: 12,
   scale: {
-    scaleX: () => d3.scaleBand(),
+    scaleX: () => d3.scaleTime(),
     scaleY: () => d3.scaleLinear(),
     scaleXName: "date",
     scaleYName: "amount",
   },
   schemeCategory: colorScheme1,
-  typeChart: "Bar",
-  mean: false,
-  median: false,
+  typeChart: "Line",
+  regression: {
+    mean: false,
+    median: false,
+    poly: false,
+    logaritm: false,
+  },
 };
