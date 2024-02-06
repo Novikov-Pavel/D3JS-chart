@@ -25,6 +25,7 @@ const domainY = [
 ];
 
 const mean = d3.mean(domainY);
+const median = d3.median(domainY);
 
 const chooseChart = (domain) => {
   const domains = {
@@ -66,6 +67,7 @@ export {
   groupDateAmount,
   line1,
   mean,
+  median,
   newDateAmount,
   parseTime,
   x,

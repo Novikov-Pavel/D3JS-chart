@@ -38,15 +38,23 @@
     :markerSize="markerSize"
     :legend="legend"
   />
+  <Median
+    v-if="median"
+    :width="width"
+    :height="height"
+    :margin="margin"
+    :markerSize="markerSize"
+    :legend="legend"
+  />
 </template>
 
 <script setup>
 import * as d3 from "d3";
 import { onMounted } from "vue";
+import { Legend, LimitValues, Mean, Median } from "../composables";
 import { animationBars, brush, dblclick, x, y } from "../composables/helpers";
 import { scaleX, scaleY } from "./Scales";
 import { Bar, Line } from "./Charts";
-import { Legend, LimitValues, Mean } from "../composables";
 
 const props = defineProps({
   data: Array,
@@ -67,6 +75,7 @@ const props = defineProps({
   scale: Object,
   notActive: Boolean,
   mean: Boolean,
+  median: Boolean,
 });
 const emit = defineEmits("isActive");
 const minLimitValue = Math.min(...props.limitValue);

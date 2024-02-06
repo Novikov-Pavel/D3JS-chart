@@ -1,12 +1,12 @@
 import * as d3 from "d3";
 
 const colorScheme1 = [
-  'rgb(0, 32, 74)',
-  'rgb(0, 87, 146)',
-  'rgb(0, 187, 240)',
-  'rgb(238, 108, 77)',
-  'rgb(218, 175, 79)',
-]
+  "rgb(0, 32, 74)",
+  "rgb(0, 87, 146)",
+  "rgb(0, 187, 240)",
+  "rgb(238, 108, 77)",
+  "rgb(218, 175, 79)",
+];
 
 export default {
   width: 800,
@@ -142,7 +142,7 @@ export default {
     rotateYText: 0,
     rotateValues: 0,
   },
-  limitValue: [1, 2],
+  limitValue: [],
   legend: {
     legendSpace: 40,
     legendSize: 20,
@@ -158,4 +158,5 @@ export default {
   schemeCategory: colorScheme1,
   typeChart: "Bar",
   mean: false,
+  median: false,
 };

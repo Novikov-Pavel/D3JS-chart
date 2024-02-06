@@ -3,8 +3,9 @@ export {
   groupDateAmount,
   line1,
   mean,
+  median,
   newDateAmount,
-  parseTime, 
+  parseTime,
   x,
   y,
 } from "../helpers/Coords";

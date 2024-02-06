@@ -28,10 +28,4 @@ svg {
   display: block;
   position: absolute;
 }
-
-// .charts {
-//   display: flex;
-//   flex-direction: column;
-//   gap: 100px;
-// }
 </style>
