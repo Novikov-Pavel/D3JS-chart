@@ -4,7 +4,7 @@ export {
   line1,
   lineGenerator,
   logaritm,
-  poly,
+  poly,series,
   mean,
   median,
   newDateAmount,

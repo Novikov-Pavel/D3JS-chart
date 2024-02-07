@@ -6,16 +6,57 @@
     :transform="`translate(${margin.left}, 0)`"
   >
     <g :transform="`translate(${-margin.left}, 0)`">
-      <path
-        class="line1"
-        fill="none"
-        stroke-width="2"
-        :stroke="colorDataAmount(groupDateAmount[0])"
-        :d="line1(newDateAmount)"
-      />
+      <g v-for="(serie, idx) in series" :key="i">
+        <path
+          fill="none"
+          stroke-width="2"
+          :stroke="colorDataAmount(serie)"
+          :d="line1(serie)"
+        />
+        <path
+          v-if="ariaFill"
+          :fill="colorDataAmount(serie)"
+          fill-opacity="0.2"
+          :d="ariaChart1(serie)"
+        />
+        <g
+          v-for="(dataSet, i) in serie"
+          :key="y(dataSet[1])"
+          @pointerover="tooltip = i"
+        >
+          <circle
+            r="3"
+            fill="white"
+            :stroke="colorDataAmount(serie)"
+            :cx="x(parseTime(dataSet.data[0]))"
+            :cy="y(dataSet[1])"
+          />
+          <text
+            :x="x(parseTime(dataSet.data[0]))"
+            :y="y(dataSet[1])"
+            :text-anchor="textAnchor(valuePosition) || 'middle'"
+            dominant-baseline="middle"
+            :font-weight="fontFormat.fontWeightValues ? 'bold' : 'normal'"
+            :font-style="fontFormat.fontItalicValues ? 'italic' : 'normal'"
+            :font-size="fontFormat.fontSizeValue"
+            :transform="`
+            translate(${valuePositionTranslate(valuePosition)}),
+            rotate(
+              ${rotateFormat.rotateValues},
+              ${x(parseTime(dataSet.data[0]))},
+              ${y(dataSet[1])})`"
+          >
+            {{
+              idx
+                ? dataSet.data[1].get(seriesName[1]).amount +
+                  dataSet.data[1].get(seriesName[0]).amount
+                : dataSet.data[1].get(seriesName[0]).amount
+            }}
+          </text>
+        </g>
+      </g>
       <path
         v-if="regression.poly"
-        class="line1"
         fill="none"
         stroke-width="2"
         :stroke="colorDataAmount(groupDateAmount[0])"
@@ -23,66 +64,13 @@
       />
       <path
         v-if="regression.logaritm"
-        class="line1"
         fill="none"
         stroke-width="2"
         :stroke="colorDataAmount(groupDateAmount[0])"
         :d="lineGenerator(logaritm)"
       />
-      <path
-        v-if="props.ariaFill"
-        class="aria1"
-        :fill="colorDataAmount(groupDateAmount[0])"
-        fill-opacity="0.2"
-        :d="ariaChart1(newDateAmount)"
-      />
-      <g class="brush" />
-      <g
-        v-for="(dataSet, i) in newDateAmount"
-        :key="x(dataSet[scale.scaleXName])"
-        @pointerover="tooltip = i"
-        @pointerleave="tooltip = null"
-      >
-        <circle
-          r="3"
-          fill="white"
-          :stroke="colorDataAmount(groupDateAmount[0])"
-          :cx="x(parseTime(dataSet[scale.scaleXName]))"
-          :cy="y(dataSet[scale.scaleYName])"
-        />
-        <text
-          :x="x(parseTime(dataSet[scale.scaleXName]))"
-          :y="y(dataSet[scale.scaleYName])"
-          :text-anchor="textAnchor(props.valuePosition) || 'middle'"
-          dominant-baseline="middle"
-          :font-weight="fontFormat.fontWeightValues ? 'bold' : 'normal'"
-          :font-style="fontFormat.fontItalicValues ? 'italic' : 'normal'"
-          :font-size="fontFormat.fontSizeValue"
-          :transform="`
-            translate(${valuePositionTranslate(props.valuePosition)}),
-            rotate(
-              ${props.rotateFormat.rotateValues},
-              ${x(parseTime(dataSet[scale.scaleXName]))},
-              ${y(dataSet[scale.scaleYName])})`"
-        >
-          {{ dataSet[scale.scaleYName] }}
-        </text>
-        <text
-          v-if="tooltip === i"
-          :x="x(parseTime(dataSet[scale.scaleXName]))"
-          :y="y(dataSet[scale.scaleYName])"
-          text-anchor="middle"
-        >
-          <tspan
-            :x="x(parseTime(dataSet[scale.scaleXName]))"
-            :dy="-20"
-            v-for="itemTooltip in dataSet"
-            :key="itemTooltip"
-          >
-            {{ itemTooltip }}
-          </tspan>
-        </text>
-      </g>
+
+      <!-- <g class="brush" /> -->
     </g>
   </svg>
 </template>
@@ -95,6 +83,7 @@ import {
   x,
   ariaChart1,
   line1,
+  series,
   lineGenerator,
   logaritm,
   poly,
@@ -124,7 +113,13 @@ const props = defineProps({
   scale: Object,
   opacity: Boolean,
   regression: Object,
+  seriesName: Array,
 });
-const colorDataAmount = d3.scaleOrdinal(props.schemeCategory);
+
+const colorDataAmount = d3
+  .scaleOrdinal()
+  .domain(series.map((d) => d.key))
+  .range(props.schemeCategory);
+
 const tooltip = ref(null);
 </script>

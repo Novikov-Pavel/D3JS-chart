@@ -22,7 +22,7 @@ export function updateChart(event) {
     if (!idleTimeout) return (idleTimeout = setTimeout(idled, 350));
   } else {
     if (config.typeChart === "Line") {
-      domainLineX = [x.invert(extent[0]), x.invert(extent[1])];
+      x.domain([x.invert(extent[0]), x.invert(extent[1])]);
       newDateAmount.value = newDateAmount.value.slice(0);
     }
 

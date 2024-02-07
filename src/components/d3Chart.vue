@@ -78,6 +78,7 @@ const props = defineProps({
   mean: Boolean,
   median: Boolean,
   regression: Object,
+  seriesName: Array,
 });
 
 const emit = defineEmits("isActive");

@@ -8,6 +8,19 @@ const parseTime = d3.timeParse("%d.%m.%Y");
 
 const groupDateAmount = ref(d3.group(config.data, (d) => d.dateAmount));
 
+const series = d3
+  .stack()
+  .keys(d3.union(config.data.map((d) => d.dateAmount)))
+  .value(([, group], key) => group.get(key).amount)(
+  d3.index(
+    config.data,
+    (d) => d.date,
+    (d) => d.dateAmount
+  )
+);
+
+console.log("series", series);
+
 const dateAmount = computed(() =>
   groupDateAmount.value.get(config.scale.scaleYName)
 );
@@ -20,10 +33,7 @@ const domainLineX = reactive(
   d3.extent(newDateAmount.value, (d) => parseTime(d[config.scale.scaleXName]))
 );
 
-const domainY = [
-  0,
-  d3.max(newDateAmount.value, (d) => d[config.scale.scaleYName]),
-];
+const domainY = [0, d3.max(series, (d) => d3.max(d, (d) => d[1]))];
 
 const mean = d3.mean(domainY);
 const median = d3.median(domainY);
@@ -53,14 +63,16 @@ const y = config.scale
 
 const line1 = d3
   .line()
-  .x((d) => x(parseTime(d[config.scale.scaleXName])))
-  .y((d) => y(d[config.scale.scaleYName]));
+  .x((d) => x(parseTime(d.data?.[0])))
+  .y((d) => y(d[1]));
 
 const ariaChart1 = d3
   .area()
-  .x((d) => x(parseTime(d[config.scale.scaleXName])))
-  .y0(y(0))
-  .y1((d) => y(d[config.scale.scaleYName]));
+  .x((d) => x(parseTime(d.data?.[0])))
+  .y0((d) => y(d[0]))
+  .y1((d) => y(d[1]));
+
+
 
 const polyRegression = regressionPoly()
   .x((d) => x(parseTime(d[config.scale.scaleXName])))
@@ -92,4 +104,5 @@ export {
   parseTime,
   x,
   y,
+  series,
 };
