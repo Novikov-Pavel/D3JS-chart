@@ -1,12 +1,22 @@
 <template>
   <svg
-    :opacity="opacity ? 0 : 1"
     :width="width - margin.left - margin.right"
     :height="height - margin.bottom - legend.legendSpace"
     :transform="`translate(${margin.left}, 0)`"
   >
     <g :transform="`translate(${-margin.left}, 0)`">
-      <g v-for="(serie, idx) in series" :key="i">
+      <g
+        v-for="(serie, idx) in seriee"
+        :key="idx"
+        :class="['line',
+          notActive1 && !idx
+            ? 'hidden1'
+            : notActive2 && idx
+            ? 'hidden2'
+            : undefined,
+        ]"
+      >
+        <g class="brush" />
         <path
           fill="none"
           stroke-width="2"
@@ -23,9 +33,10 @@
           v-for="(dataSet, i) in serie"
           :key="y(dataSet[1])"
           @pointerover="tooltip = i"
+          @pointerleave="tooltip = null"
         >
           <circle
-            r="3"
+            :r="tooltip === i ? 4 : 3"
             fill="white"
             :stroke="colorDataAmount(serie)"
             :cx="x(parseTime(dataSet.data[0]))"
@@ -46,15 +57,22 @@
               ${x(parseTime(dataSet.data[0]))},
               ${y(dataSet[1])})`"
           >
-            {{
-              idx
-                ? dataSet.data[1].get(seriesName[1]).amount +
-                  dataSet.data[1].get(seriesName[0]).amount
-                : dataSet.data[1].get(seriesName[0]).amount
-            }}
+            {{ dataSet[1] }}
+          </text>
+
+          <text
+            v-if="tooltip === i"
+            :x="x(parseTime(dataSet.data[0]))"
+            :y="y(dataSet[1])"
+            text-anchor="middle"
+          >
+            <tspan :x="x(parseTime(dataSet[scale.scaleXName]))" :dy="-30">
+              {{ dataSet[1] }}
+            </tspan>
           </text>
         </g>
       </g>
+
       <path
         v-if="regression.poly"
         fill="none"
@@ -69,8 +87,6 @@
         :stroke="colorDataAmount(groupDateAmount[0])"
         :d="lineGenerator(logaritm)"
       />
-
-      <!-- <g class="brush" /> -->
     </g>
   </svg>
 </template>
@@ -79,11 +95,9 @@
 import * as d3 from "d3";
 import {
   groupDateAmount,
-  newDateAmount,
   x,
   ariaChart1,
   line1,
-  series,
   lineGenerator,
   logaritm,
   poly,
@@ -91,6 +105,7 @@ import {
   parseTime,
   textAnchor,
   valuePositionTranslate,
+  seriee,
 } from "../../../composables/helpers";
 import { ref } from "vue";
 
@@ -111,15 +126,25 @@ const props = defineProps({
   ariaFill: Boolean,
   markerSize: Number,
   scale: Object,
-  opacity: Boolean,
   regression: Object,
   seriesName: Array,
+  notActive1: Boolean,
+  notActive2: Boolean,
 });
 
-const colorDataAmount = d3
-  .scaleOrdinal()
-  .domain(series.map((d) => d.key))
-  .range(props.schemeCategory);
-
+const colorDataAmount = d3.scaleOrdinal().range(props.schemeCategory);
 const tooltip = ref(null);
 </script>
+<style scoped>
+.hidden1,
+.hidden2 {
+  opacity: 0;
+  transition: all 1s ease-in-out;
+}
+.line {
+  cursor: pointer;
+  &:not(.hidden1) {
+    transition: 1s;
+  }
+}
+</style>

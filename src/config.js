@@ -153,7 +153,7 @@ export default {
   },
   limitValue: [],
   legend: {
-    legendSpace: 40,
+    legendSpace: 80,
     legendSize: 20,
   },
   ariaFill: true,

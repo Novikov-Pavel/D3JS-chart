@@ -4,7 +4,8 @@
   <Legend
     v-if="legend.legendSpace"
     v-bind="props"
-    @isActive="(notActive) => $emit('isActive', notActive)"
+    @isActive1="(notActive1) => $emit('isActive1', notActive1)"
+    @isActive2="(notActive2) => $emit('isActive2', notActive2)"
     :style="{ top: legend.legendSpace }"
   />
   <LimitValues
@@ -16,23 +17,8 @@
     :limitValue="limitValue"
     :legend="legend"
   />
-  <Line
-    v-if="typeChart === 'Line'"
-    :class="['chart', { notActive: notActive }]"
-    @dblclick="dblclick"
-    v-bind="props"
-    :regression="regression"
-    :style="{ top: margin.top }"
-  />
-  <Bar
-    v-if="typeChart === 'Bar'"
-    :class="['chart', { notActive: notActive }]"
-    @dblclick="dblclick"
-    v-bind="props"
-    :style="{ top: margin.top }"
-  />
   <Mean
-    v-if="mean"
+    v-if="regression.mean"
     :width="width"
     :height="height"
     :margin="margin"
@@ -40,12 +26,29 @@
     :legend="legend"
   />
   <Median
-    v-if="median"
+    v-if="regression.median"
     :width="width"
     :height="height"
     :margin="margin"
     :markerSize="markerSize"
     :legend="legend"
+  />
+  <Line
+    v-if="typeChart === 'Line'"
+    :class="['chart']"
+    @dblclick="dblclick"
+    v-bind="props"
+    :regression="regression"
+    :style="{ top: margin.top }"
+    :notActive1="notActive1"
+    :notActive2="notActive2"
+  />
+  <Bar
+    v-if="typeChart === 'Bar'"
+    :class="['chart', { notActive: notActive }]"
+    @dblclick="dblclick"
+    v-bind="props"
+    :style="{ top: margin.top }"
   />
 </template>
 
@@ -74,14 +77,15 @@ const props = defineProps({
   ariaFill: Boolean,
   markerSize: Number,
   scale: Object,
-  notActive: Boolean,
+  notActive1: Boolean,
+  notActive2: Boolean,
   mean: Boolean,
   median: Boolean,
   regression: Object,
   seriesName: Array,
 });
 
-const emit = defineEmits("isActive");
+const emit = defineEmits(["isActive1", "isActive2"]);
 
 onMounted(() => {
   const axisX = d3.select(".xAxis").call(d3.axisBottom(x));

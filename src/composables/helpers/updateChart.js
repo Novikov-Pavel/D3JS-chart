@@ -1,5 +1,12 @@
 import * as d3 from "d3";
-import { animationBars, brush, groupDateAmount, newDateAmount, x } from "./";
+import {
+  animationBars,
+  brush,
+  groupDateAmount,
+  newDateAmount,
+  seriee,
+  x,
+} from "./";
 import config from "../../config";
 
 let idleTimeout;
@@ -23,7 +30,7 @@ export function updateChart(event) {
   } else {
     if (config.typeChart === "Line") {
       x.domain([x.invert(extent[0]), x.invert(extent[1])]);
-      newDateAmount.value = newDateAmount.value.slice(0);
+      seriee.value = seriee.value.slice(0);
     }
 
     if (config.typeChart === "Bar") {

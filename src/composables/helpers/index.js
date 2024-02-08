@@ -1,6 +1,6 @@
 export {
   ariaChart1,
-  groupDateAmount,
+  groupDateAmount,data,
   line1,
   lineGenerator,
   logaritm,
@@ -10,7 +10,7 @@ export {
   newDateAmount,
   parseTime,
   x,
-  y,
+  y,seriee
 } from "../helpers/Coords";
 export { animationBars } from "../helpers/animationBars";
 export { brush } from "../helpers/brush";
