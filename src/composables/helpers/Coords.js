@@ -23,7 +23,7 @@ const series = ref(
   )
 );
 
-const seriee = reactive(series)
+const seriee = reactive(series);
 
 const dateAmount = computed(() =>
   groupDateAmount.value.get(config.scale.scaleYName)
@@ -42,8 +42,8 @@ const domainY = [0, d3.max(series.value, (d) => d3.max(d, (d) => d[1]))];
 const mean = d3.mean(domainY);
 const median = d3.median(domainY);
 
-console.log('mean', mean);
-console.log('median', median);
+console.log("mean", mean);
+console.log("median", median);
 
 const chooseChart = (domain) => {
   const domains = {
@@ -71,12 +71,14 @@ const y = config.scale
 const line1 = computed(() =>
   d3
     .line()
+    .curve(d3.curveCatmullRom.alpha(0.5))
     .x((d) => x(parseTime(d.data?.[0])))
     .y((d) => y(d[1]))
 );
 
 const ariaChart1 = d3
   .area()
+  .curve(d3.curveCatmullRom.alpha(0.5))
   .x((d) => x(parseTime(d.data?.[0])))
   .y0((d) => y(d[0]))
   .y1((d) => y(d[1]));
@@ -112,5 +114,6 @@ export {
   parseTime,
   x,
   y,
-  series,seriee
+  series,
+  seriee,
 };
