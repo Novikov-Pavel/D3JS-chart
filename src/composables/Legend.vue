@@ -3,7 +3,7 @@
     <g
       @click="setActive(i)"
       v-if="legend.legendSpace"
-      v-for="(rect, i) in series"
+      v-for="(rect, i) in seriee"
       :key="rect[i]"
       :fill="colorDataAmount(rect)"
     >
@@ -42,7 +42,7 @@
 
 <script setup>
 import * as d3 from "d3";
-import { groupDateAmount, series } from "./helpers";
+import { seriee } from "./helpers";
 import { ref } from "vue";
 
 const props = defineProps({

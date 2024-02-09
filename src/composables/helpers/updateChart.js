@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import {
   animationBars,
   brush,
+  data,
   groupDateAmount,
   newDateAmount,
   seriee,
@@ -30,7 +31,6 @@ export function updateChart(event) {
   } else {
     if (config.typeChart === "Line") {
       x.domain([x.invert(extent[0]), x.invert(extent[1])]);
-      seriee.value = seriee.value.slice(0);
     }
 
     if (config.typeChart === "Bar") {

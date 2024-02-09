@@ -37,15 +37,15 @@ const domainLineX = reactive(
   d3.extent(newDateAmount.value, (d) => parseTime(d[config.scale.scaleXName]))
 );
 
-const domainY = [
+const domainY = computed(() => [
   0,
-  d3.max(series.value, (d) =>
+  d3.max(seriee.value, (d) =>
     d3.max(d, (d) => (config.regression.poly ? d[1] * 3 : d[1]))
   ),
-];
+]);
 
-const mean = d3.mean(domainY);
-const median = d3.median(domainY);
+const mean = d3.mean(domainY.value);
+const median = d3.median(domainY.value);
 
 const chooseChart = (domain) => {
   const domains = {
@@ -64,7 +64,7 @@ if (config.typeChart === "Bar") x.padding(0.3);
 
 const y = config.scale
   .scaleY()
-  .domain(domainY)
+  .domain(domainY.value)
   .range([
     config.height - config.margin.bottom - config.legend.legendSpace,
     config.margin.top,
