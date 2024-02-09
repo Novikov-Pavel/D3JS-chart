@@ -33,7 +33,7 @@
     :markerSize="markerSize"
     :legend="legend"
   />
-  <Line
+  <LineContainer
     v-if="typeChart === 'Line'"
     :class="['chart']"
     @dblclick="dblclick"
@@ -43,22 +43,30 @@
     :notActive1="notActive1"
     :notActive2="notActive2"
   />
-  <Bar
+  <!-- <Bar
     v-if="typeChart === 'Bar'"
     :class="['chart', { notActive: notActive }]"
     @dblclick="dblclick"
     v-bind="props"
     :style="{ top: margin.top }"
-  />
+  /> -->
 </template>
 
 <script setup>
 import * as d3 from "d3";
 import { onMounted } from "vue";
 import { Legend, LimitValues, Mean, Median } from "../composables";
-import { animationBars, brush, dblclick, x, y } from "../composables/helpers";
+import {
+  animationBars,
+  brush,
+  dblclick,
+  x,
+  y,
+  seriee,
+} from "../composables/helpers";
 import { scaleX, scaleY } from "./Scales";
 import { Bar, Line } from "./Charts";
+import LineContainer from "./Charts/Line/LineContainer.vue";
 
 const props = defineProps({
   data: Array,
