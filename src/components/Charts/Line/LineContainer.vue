@@ -9,6 +9,7 @@
       v-for="(serie, idx) in seriee"
       :key="idx"
       :serie="serie"
+      :colorDataAmount="colorDataAmount"
     />
   </svg>
 </template>
@@ -16,6 +17,7 @@
 <script setup>
 import { Line } from "../";
 import { seriee } from "../../../composables/helpers";
+import * as d3 from "d3";
 
 const props = defineProps({
   width: Number,
@@ -39,6 +41,5 @@ const props = defineProps({
   notActive2: Boolean,
 });
 
-if (props.notActive1) seriee.value.slice(1)
-console.log(seriee.value);
+const colorDataAmount = d3.scaleOrdinal().range(props.schemeCategory);
 </script>

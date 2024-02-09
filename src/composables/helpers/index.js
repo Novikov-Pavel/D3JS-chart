@@ -1,16 +1,19 @@
 export {
   ariaChart1,
-  groupDateAmount,data,
+  groupDateAmount,
+  data,
   line1,
-  lineGenerator,
-  logaritm,
-  poly,series,
+  series,
   mean,
   median,
   newDateAmount,
   parseTime,
   x,
-  y,seriee
+  y,
+  seriee,
+  lineGenerator,
+  polyRegression,
+  logRegression,
 } from "../helpers/Coords";
 export { animationBars } from "../helpers/animationBars";
 export { brush } from "../helpers/brush";

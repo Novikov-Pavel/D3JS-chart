@@ -1,8 +1,6 @@
 <template>
   <g :transform="`translate(${-margin.left}, 0)`">
-    <g
-      
-    >
+    <g>
       <g class="brush" />
       <path
         fill="none"
@@ -64,33 +62,31 @@
       v-if="regression.poly"
       fill="none"
       stroke-width="2"
-      :stroke="colorDataAmount(groupDateAmount[0])"
-      :d="lineGenerator(poly)"
+      :stroke="colorDataAmount(serie)"
+      :d="lineGenerator(polyRegression(serie))"
     />
     <path
       v-if="regression.logaritm"
       fill="none"
       stroke-width="2"
-      :stroke="colorDataAmount(groupDateAmount[0])"
-      :d="lineGenerator(logaritm)"
+      :stroke="colorDataAmount(serie)"
+      :d="lineGenerator(logRegression(serie))"
     />
   </g>
 </template>
 
 <script setup>
-import * as d3 from "d3";
 import {
-  groupDateAmount,
   x,
   ariaChart1,
   line1,
-  lineGenerator,
-  logaritm,
-  poly,
   y,
   parseTime,
   textAnchor,
   valuePositionTranslate,
+  lineGenerator,
+  polyRegression,
+  logRegression,
 } from "../../../composables/helpers";
 import { ref } from "vue";
 
@@ -114,9 +110,9 @@ const props = defineProps({
   regression: Object,
   seriesName: Array,
   serie: Array,
+  colorDataAmount: Array,
 });
 
-const colorDataAmount = d3.scaleOrdinal().range(props.schemeCategory);
 const tooltip = ref(null);
 </script>
 <style scoped>

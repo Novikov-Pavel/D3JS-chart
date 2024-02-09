@@ -37,13 +37,15 @@ const domainLineX = reactive(
   d3.extent(newDateAmount.value, (d) => parseTime(d[config.scale.scaleXName]))
 );
 
-const domainY = [0, d3.max(series.value, (d) => d3.max(d, (d) => d[1]))];
+const domainY = [
+  0,
+  d3.max(series.value, (d) =>
+    d3.max(d, (d) => (config.regression.poly ? d[1] * 3 : d[1]))
+  ),
+];
 
 const mean = d3.mean(domainY);
 const median = d3.median(domainY);
-
-console.log("mean", mean);
-console.log("median", median);
 
 const chooseChart = (domain) => {
   const domains = {
@@ -83,31 +85,28 @@ const ariaChart1 = d3
   .y0((d) => y(d[0]))
   .y1((d) => y(d[1]));
 
-const polyRegression = regressionPoly()
-  .x((d) => x(parseTime(d[config.scale.scaleXName])))
-  .y((d) => y(d[config.scale.scaleYName]))
-  .order(3);
-
-const logRegression = regressionLog()
-  .x((d) => x(parseTime(d[config.scale.scaleXName])))
-  .y((d) => y(d[config.scale.scaleYName]));
-
-const poly = computed(() => polyRegression(newDateAmount.value));
-const logaritm = computed(() => logRegression(newDateAmount.value));
-
 const lineGenerator = d3
   .line()
   .x((d) => d[0])
   .y((d) => d[1]);
 
+const polyRegression = regressionPoly()
+  .x((d) => x(parseTime(d.data[0])))
+  .y((d) => y(d[1]))
+  .order(3);
+
+const logRegression = regressionLog()
+  .x((d) => x(parseTime(d.data[0])))
+  .y((d) => y(d[1]));
+
 export {
+  lineGenerator,
+  polyRegression,
+  logRegression,
   ariaChart1,
   data,
   groupDateAmount,
   line1,
-  lineGenerator,
-  logaritm,
-  poly,
   mean,
   median,
   newDateAmount,
